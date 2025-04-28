@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:invoice_maker/dashboard.dart';
+import 'package:invoice_maker/services/notification_service.dart';
 
 import '../draft/websocket_demo.dart';
 import 'sign_in_screen.dart';
@@ -55,6 +56,16 @@ class _SplashScreenState extends State<SplashScreen> {
                 Get.to(() => WebsocketDemo());
               },
               child: Text("Websocket"),
+            ),
+             ElevatedButton(
+              onPressed: () {
+
+             FreeNotificationService().showNotification(
+                          title:"Confirmed ✅", body: "0700000000",
+                        );
+           
+              },
+              child: Text("Local Notification"),
             ),
           ],
         ),

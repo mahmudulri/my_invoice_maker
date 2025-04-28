@@ -6,11 +6,14 @@ import 'package:invoice_maker/dashboard.dart';
 import 'package:invoice_maker/screens/sign_in_screen.dart';
 
 import 'screens/splash_screen.dart';
+import 'services/notification_service.dart';
 
 void main() async {
   runApp(const MyApp());
   await GetStorage.init();
   WidgetsFlutterBinding.ensureInitialized();
+  FreeNotificationService notificationService = FreeNotificationService();
+  await notificationService.initNotification();  // Initialize once
   // await Firebase.initializeApp(
   //   options: FirebaseOptions(
   //     apiKey: "AIzaSyAK1E0gcO8oo0-fDTuW63TWYdKrkJLRGrk",
