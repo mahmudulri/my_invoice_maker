@@ -17,10 +17,10 @@ class NewItemsScreen extends StatelessWidget {
     'Piece',
     'Dozen',
     'Bundle',
-    'Kilogram (kg)',
-    'Gram (g)',
-    'Liter (L)',
-    'Milliliter (mL)',
+    'Kg',
+    'G',
+    'L',
+    'Ml',
     'Case',
     'Pallet',
     'Roll',
@@ -30,7 +30,7 @@ class NewItemsScreen extends StatelessWidget {
 
   List<String> discountType = [
     'flat',
-    'percentage',
+    '%',
   ];
 
   final ItemListController itemListController = Get.put(ItemListController());
@@ -660,7 +660,7 @@ class NewItemsScreen extends StatelessWidget {
                             "unitofmeasure":
                                 addItemController.unitOfMeasureController.text,
                             "discount":
-                                addItemController.discountTypeController.text,
+                                addItemController.unitDiscountController.text,
                             "discounttype":
                                 addItemController.discountTypeController.text,
                             "vat": addItemController.unitVatController.text,

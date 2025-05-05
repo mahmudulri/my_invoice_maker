@@ -14,16 +14,17 @@ import 'package:pdf/widgets.dart' as pw;
 //   TemplateController(),
 // );
 
-class PdfTemplate2 {
+class PdfTemplate3 {
   Future<Uint8List> generatePDF() async {
     final pdf = pw.Document();
     List<pw.Widget> widgets = [];
-    final logo =
-        (await rootBundle.load("assets/icons/logo.png")).buffer.asUint8List();
+    final logo = (await rootBundle.load("assets/images/tem3back.jpg"))
+        .buffer
+        .asUint8List();
 
     final headerarea = pw.Container(
       height: 60,
-      color: PdfColors.white,
+      // color: PdfColors.red,
       child: pw.Row(
         mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
         crossAxisAlignment: pw.CrossAxisAlignment.start,
@@ -220,33 +221,38 @@ class PdfTemplate2 {
       ),
     );
     final gap15 = pw.SizedBox(height: 15);
-    final gap80 = pw.SizedBox(height: 80);
-    final fullgap = pw.Expanded(
-      flex: 1,
-      fit: pw.FlexFit.tight,
-      child: pw.Container(),
-    );
+    final gap40 = pw.SizedBox(height: 40);
+    final fullgap = pw.SizedBox(height: 30);
 
     widgets.add(headerarea);
     widgets.add(divider);
     widgets.add(addressArea);
     widgets.add(gap15);
     widgets.add(table());
-    widgets.add(gap80);
+    widgets.add(gap40);
     widgets.add(totalprice());
 
     widgets.add(fullgap);
 
+    final pdfTheme = pw.PageTheme(
+      pageFormat: PdfPageFormat.a4,
+      margin: pw.EdgeInsets.symmetric(horizontal: 30, vertical: 25),
+      buildBackground: (context) => pw.FullPage(
+        ignoreMargins: true,
+        child: pw.Opacity(
+          opacity: 0.3,
+          child: pw.Image(
+            pw.MemoryImage(logo),
+            fit: pw.BoxFit.cover,
+          ),
+        ),
+      ),
+    );
+
     pdf.addPage(
       pw.MultiPage(
-        pageFormat: PdfPageFormat.a4,
-        margin: pw.EdgeInsets.symmetric(
-          horizontal: 30,
-          vertical: 25,
-        ), // <<< REMOVE ALL MARGIN
-        build: (pw.Context context) {
-          return widgets;
-        },
+        pageTheme: pdfTheme,
+        build: (context) => widgets,
       ),
     );
 
@@ -430,7 +436,7 @@ class PdfTemplate2 {
       children: <pw.TableRow>[
         pw.TableRow(
           decoration: pw.BoxDecoration(
-            color: PdfColors.black,
+            color: PdfColor.fromHex('#3498db'),
             // border: pw.Border.all(
             //   style: pw.BorderStyle.solid,
             //   color: PdfColors.black,

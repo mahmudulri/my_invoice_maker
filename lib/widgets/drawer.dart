@@ -41,24 +41,7 @@ class MyDrawer extends StatelessWidget {
           SizedBox(
             height: 50,
           ),
-          DrawerButtonWidget(
-            buttonName: "Invoice Templates",
-            myicon: FontAwesomeIcons.caretRight,
-          ),
-          SizedBox(
-            height: 7,
-          ),
-          DrawerButtonWidget(
-            buttonName: "Settings",
-            myicon: FontAwesomeIcons.caretRight,
-          ),
-          SizedBox(
-            height: 7,
-          ),
-          DrawerButtonWidget(
-            buttonName: "Features Request",
-            myicon: FontAwesomeIcons.caretRight,
-          ),
+
           Spacer(),
           DrawerButtonWidget(
             buttonName: "Log Out",

@@ -9,9 +9,11 @@ import 'package:invoice_maker/widgets/drawer.dart';
 
 import 'controllers/address_controller.dart';
 import 'controllers/template_theme_controller.dart';
+import 'screens/create_invoice_screen.dart';
 import 'screens/new_invoice.dart';
 import 'screens/home_screen.dart';
 import 'screens/pdf_template_screen.dart';
+import 'screens/pdfpageview.dart';
 import 'screens/pdtview_screen.dart';
 import 'screens/sample_screen.dart';
 import 'screens/view_all_invoice.dart';
@@ -89,7 +91,7 @@ class _DashBoardState extends State<DashBoard> {
             // checkData();
           },
           child: Text(
-            "Smart Invoice Generator",
+            "Mega Invoice Generator",
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 20,
@@ -101,115 +103,205 @@ class _DashBoardState extends State<DashBoard> {
       body: Container(
         height: screenHeight,
         width: screenWidth,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 40),
-              child: MenuButton(
-                buttonName: "Create Invoice",
-                imagelink: "assets/icons/new-invoice.png",
-                onpressed: () {
-                  Get.to(() => MakeNewScreen());
-                },
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 30),
+          child: Column(
+            children: [
+              SizedBox(
+                height: 30,
               ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 40),
-              child: MenuButton(
-                buttonName: "View all Invoice",
-                imagelink: "assets/icons/invoice.png",
-                onpressed: () {
-                  Get.to(() => AllInvoicesList());
-                },
-              ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 40),
-              child: MenuButton(
-                buttonName: "My clients",
-                imagelink: "assets/icons/clients.png",
-              ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 40),
-              child: MenuButton(
-                buttonName: "Due list",
-                imagelink: "assets/icons/down-payment.png",
-              ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 40),
-              child: MenuButton(
-                buttonName: "PDF 1",
-                imagelink: "assets/icons/down-payment.png",
-                // onpressed: () async {
-                //   final data = await pdfTemplate1.generatePDF();
-                //   pdfTemplate1.savePdfFile("Inovice maker", data);
-                // },
-                onpressed: () async {
-                  final data = await pdfTemplate1.generatePDF();
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => PdfPreviewScreen(pdfBytes: data),
+              Container(
+                height: 120,
+                width: screenWidth,
+                child: Row(
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(
+                              8), // optional for rounded corners
+                          boxShadow: [
+                            BoxShadow(
+                              color:
+                                  Colors.black.withOpacity(0.1), // soft shadow
+                              blurRadius: 10,
+                              spreadRadius: 2,
+                              offset: Offset(0, 5), // vertical shadow
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "Total Unpaid",
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 15,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            SizedBox(
+                              height: 15,
+                            ),
+                            Text(
+                              "0.00 tk",
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w800,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
-                  );
-                },
-              ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 40),
-              child: MenuButton(
-                buttonName: "PDF 2",
-                imagelink: "assets/icons/down-payment.png",
-                // onpressed: () async {
-                //   final data = await pdfTemplate2.generatePDF();
-                //   pdfTemplate2.savePdfFile("Inovice maker", data);
-                // },
-                onpressed: () async {
-                  final data = await pdfTemplate2.generatePDF();
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => PdfPreviewScreen(pdfBytes: data),
+                    SizedBox(
+                      width: 10,
                     ),
-                  );
-                },
+                    Expanded(
+                      flex: 1,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(
+                              8), // optional for rounded corners
+                          boxShadow: [
+                            BoxShadow(
+                              color:
+                                  Colors.black.withOpacity(0.1), // soft shadow
+                              blurRadius: 10,
+                              spreadRadius: 2,
+                              offset: Offset(0, 5), // vertical shadow
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "Total Overdue",
+                              style: TextStyle(
+                                color: Colors.red,
+                                fontSize: 15,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            SizedBox(
+                              height: 15,
+                            ),
+                            Text(
+                              "0.00 tk",
+                              style: TextStyle(
+                                color: Colors.red,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w800,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 40),
-              child: MenuButton(
-                buttonName: "PDF Template",
-                imagelink: "assets/icons/down-payment.png",
-                onpressed: () {
-                  Get.to(() => PdfTemplateScreen());
-                },
+              SizedBox(
+                height: 50,
               ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-          ],
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  MenuButton(
+                    buttonName: "Create Invoice",
+                    imagelink: "assets/icons/new-invoice.png",
+                    // onpressed: () {
+                    //   Get.to(() => CreateInvoiceScreen());
+                    // },
+                    onpressed: () {
+                      Get.to(() => CreateInvoiceScreen());
+                    },
+                  ),
+                  MenuButton(
+                    buttonName: "View all Invoice",
+                    imagelink: "assets/icons/invoice.png",
+                    onpressed: () {
+                      Get.to(() => AllInvoicesList());
+                    },
+                  ),
+                  MenuButton(
+                    buttonName: "Clients",
+                    imagelink: "assets/icons/down-payment.png",
+                    // onpressed: () async {
+                    //   final data = await pdfTemplate1.generatePDF();
+                    //   pdfTemplate1.savePdfFile("Inovice maker", data);
+                    // },
+                    onpressed: () async {},
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  MenuButton(
+                    buttonName: "PDF",
+                    imagelink: "assets/icons/down-payment.png",
+                    onpressed: () async {
+                      final data = await pdfTemplate1.generatePDF();
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              PdfPreviewScreen(pdfBytes: data),
+                        ),
+                      );
+                    },
+                  ),
+                  MenuButton(
+                    buttonName: "PDF Template",
+                    imagelink: "assets/icons/down-payment.png",
+                    onpressed: () {
+                      Get.to(() => PdfTemplateScreen());
+                    },
+                  ),
+                  MenuButton(
+                    buttonName: "Template pageview",
+                    imagelink: "assets/icons/down-payment.png",
+                    onpressed: () {
+                      Get.to(() => Pdfpageview());
+                    },
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  MenuButton(
+                    buttonName: "Items",
+                    imagelink: "assets/icons/down-payment.png",
+                    onpressed: () async {},
+                  ),
+                  MenuButton(
+                    buttonName: "Settings",
+                    imagelink: "assets/icons/down-payment.png",
+                    onpressed: () {},
+                  ),
+                  MenuButton(
+                    buttonName: "Stafs",
+                    imagelink: "assets/icons/down-payment.png",
+                    onpressed: () {},
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -235,21 +327,22 @@ class MenuButton extends StatelessWidget {
     return GestureDetector(
       onTap: onpressed,
       child: Container(
-        height: 50,
-        width: screenWidth,
+        height: 110,
+        width: 100,
         decoration: BoxDecoration(
-          color: AppColors.primaryColor,
+          color: AppColors.defaultTextColor,
           borderRadius: BorderRadius.circular(10),
         ),
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 20),
-          child: Row(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Padding(
                 padding: EdgeInsets.all(8.0),
                 child: Image.asset(
                   imagelink.toString(),
-                  height: 50,
+                  height: 40,
                 ),
               ),
               SizedBox(
@@ -257,9 +350,10 @@ class MenuButton extends StatelessWidget {
               ),
               Text(
                 buttonName.toString(),
+                textAlign: TextAlign.center,
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: screenWidth * 0.045,
+                    fontSize: 10,
                     color: Colors.white),
               ),
             ],

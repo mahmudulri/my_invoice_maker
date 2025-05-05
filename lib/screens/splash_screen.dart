@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:invoice_maker/dashboard.dart';
@@ -31,6 +32,8 @@ class _SplashScreenState extends State<SplashScreen> {
   //   super.initState();
   // }
 
+  String text = "Stop service";
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,15 +60,45 @@ class _SplashScreenState extends State<SplashScreen> {
               },
               child: Text("Websocket"),
             ),
-             ElevatedButton(
-              onPressed: () {
+            // ElevatedButton(
+            //   onPressed: () {
+            //     FreeNotificationService().showNotification(
+            //       title: "Confirmed ✅",
+            //       body: "0700000000",
+            //     );
+            //   },
+            //   child: Text("Local Notification"),
+            // ),
 
-             FreeNotificationService().showNotification(
-                          title:"Confirmed ✅", body: "0700000000",
-                        );
-           
+            ElevatedButton(
+              onPressed: () {
+                FlutterBackgroundService().invoke('setAsForeground');
               },
-              child: Text("Local Notification"),
+              child: Text("Foreground Mode"),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                FlutterBackgroundService().invoke('setAsBackground');
+              },
+              child: Text("Background Mode"),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                final service = FlutterBackgroundService();
+                var isRunning = await service.isRunning();
+                if (isRunning) {
+                  service.invoke('stopService');
+                } else {
+                  service.startService();
+                }
+                if (!isRunning) {
+                  text = "Stop Service";
+                } else {
+                  text = "Start Service";
+                }
+                setState(() {});
+              },
+              child: Text(text),
             ),
           ],
         ),

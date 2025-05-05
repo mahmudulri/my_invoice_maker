@@ -27,7 +27,7 @@ class BusinessTextbox extends StatelessWidget {
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
         child: TextField(
-          keyboardType: hintText == "Phone No."
+          keyboardType: hintText == "phone No."
               ? TextInputType.phone
               : TextInputType.name,
           controller: controller,

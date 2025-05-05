@@ -42,5 +42,21 @@ class NewItemsController extends GetxController {
       "quantitytype": "pics",
       "total": "113025.30",
     },
+    {
+      "name": "Oil",
+      "date": "10-10-2023",
+      "unitprice": "12.50",
+      "quantity": "10",
+      "quantitytype": "litter",
+      "total": "125.30",
+    },
+    {
+      "name": "Sugar",
+      "date": "10-10-2023",
+      "unitprice": "12.50",
+      "quantity": "5",
+      "quantitytype": "kg",
+      "total": "258.30",
+    },
   ];
 }

@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:invoice_maker/pdfsample/sample_1.dart';
-import 'package:invoice_maker/pdfsample/sample_2.dart';
 
 import '../pdftemplates/pdftemplate1.dart';
 import 'pdf_template_screen.dart';

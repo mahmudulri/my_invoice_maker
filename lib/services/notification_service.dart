@@ -8,7 +8,6 @@
 
 //     var initializationSettings = InitializationSettings(
 //       android: initializationSettingsAndroid,
-      
 
 //     );
 //     await notificationsPlugin.initialize(initializationSettings,
@@ -27,11 +26,8 @@
 //     return notificationsPlugin.show(id, title, body, notificationDetails());
 
 //   }
-  
-
 
 // }
-
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
@@ -43,8 +39,8 @@ class FreeNotificationService {
   bool isPremium = true;
 
   Future<void> initNotification() async {
-  AndroidInitializationSettings initializationSettingsAndroid =
-  const AndroidInitializationSettings('flutter_logo');
+    AndroidInitializationSettings initializationSettingsAndroid =
+        const AndroidInitializationSettings('flutter_logo');
 
     var initializationSettingsIOS = DarwinInitializationSettings(
         requestAlertPermission: true,
@@ -79,7 +75,11 @@ class FreeNotificationService {
       {String? title, String? body, String? payLoad}) async {
     int id = DateTime.now().millisecondsSinceEpoch.hashCode;
     return notificationsPlugin.show(
-        id, title, body, await notificationDetails(),);
+      id,
+      title,
+      body,
+      await notificationDetails(),
+    );
   }
 }
 
@@ -129,6 +129,4 @@ class PremiumNotificationService {
   //   return notificationsPlugin.show(
   //       id, title, body, await notificationDetails());
   // }
-
-  
 }

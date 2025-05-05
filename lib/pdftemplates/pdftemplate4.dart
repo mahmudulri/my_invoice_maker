@@ -14,94 +14,114 @@ import 'package:pdf/widgets.dart' as pw;
 //   TemplateController(),
 // );
 
-class PdfTemplate2 {
+class PdfTemplate4 {
   Future<Uint8List> generatePDF() async {
     final pdf = pw.Document();
     List<pw.Widget> widgets = [];
+
+    final background = (await rootBundle.load("assets/images/tem3back.jpg"))
+        .buffer
+        .asUint8List();
     final logo =
         (await rootBundle.load("assets/icons/logo.png")).buffer.asUint8List();
 
     final headerarea = pw.Container(
-      height: 60,
-      color: PdfColors.white,
-      child: pw.Row(
-        mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: pw.CrossAxisAlignment.start,
-        children: [
-          // pw.Image(pw.MemoryImage(logo), height: 60),
-          pw.Container(
-            width: 200,
-            // color: PdfColors.red,
-            child: pw.Column(
-              mainAxisAlignment: pw.MainAxisAlignment.start,
-              crossAxisAlignment: pw.CrossAxisAlignment.start,
-              children: [
-                pw.Text(
-                  "INVOICE",
-                  style: pw.TextStyle(
-                    fontSize: 35,
-                    fontWeight: pw.FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          pw.SizedBox(
-            width: 50,
-          ),
-
-          pw.Container(
-            width: 250,
-            // color: PdfColors.green,
-            child: pw.Column(
-              crossAxisAlignment: pw.CrossAxisAlignment.end,
-              children: [
-                pw.Row(
+        height: 90,
+        width: double.infinity,
+        decoration: pw.BoxDecoration(
+          color: PdfColor.fromHex('#3498db'),
+          // borderRadius: pw.BorderRadius.only(
+          //   bottomLeft: pw.Radius.circular(15),
+          //   bottomRight: pw.Radius.circular(15),
+          // ),
+        ),
+        child: pw.Padding(
+          padding: pw.EdgeInsets.only(left: 30, right: 30, top: 25),
+          child: pw.Row(
+            mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
+            children: [
+              pw.Image(pw.MemoryImage(logo), height: 40),
+              pw.SizedBox(
+                width: 10,
+              ),
+              pw.Container(
+                width: 190,
+                // color: PdfColors.tr,
+                child: pw.Column(
+                  mainAxisAlignment: pw.MainAxisAlignment.start,
+                  crossAxisAlignment: pw.CrossAxisAlignment.start,
                   children: [
                     pw.Text(
-                      "ID :",
+                      "INVOICE",
                       style: pw.TextStyle(
-                        fontSize: 18,
+                        fontSize: 35,
                         fontWeight: pw.FontWeight.bold,
-                      ),
-                    ),
-                    pw.Spacer(),
-                    pw.Text(
-                      "INV00001",
-                      style: pw.TextStyle(
-                        fontSize: 18,
+                        color: PdfColors.white,
                       ),
                     ),
                   ],
                 ),
-                pw.Row(
+              ),
+              pw.SizedBox(
+                width: 40,
+              ),
+              pw.Container(
+                width: 250,
+                // color: PdfColors.green,
+                child: pw.Column(
+                  crossAxisAlignment: pw.CrossAxisAlignment.end,
                   children: [
-                    pw.Text(
-                      "Date :",
-                      style: pw.TextStyle(
-                        fontSize: 18,
-                        fontWeight: pw.FontWeight.bold,
-                      ),
+                    pw.Row(
+                      children: [
+                        pw.Text(
+                          "ID :",
+                          style: pw.TextStyle(
+                            fontSize: 18,
+                            fontWeight: pw.FontWeight.bold,
+                            color: PdfColors.white,
+                          ),
+                        ),
+                        pw.Spacer(),
+                        pw.Text(
+                          "INV00001",
+                          style: pw.TextStyle(
+                            fontSize: 18,
+                            color: PdfColors.white,
+                          ),
+                        ),
+                      ],
                     ),
-                    pw.Spacer(),
-                    pw.Text(
-                      "29-Apr-2025",
-                      style: pw.TextStyle(
-                        fontSize: 18,
-                      ),
+                    pw.Row(
+                      children: [
+                        pw.Text(
+                          "Date :",
+                          style: pw.TextStyle(
+                            fontSize: 18,
+                            fontWeight: pw.FontWeight.bold,
+                            color: PdfColors.white,
+                          ),
+                        ),
+                        pw.Spacer(),
+                        pw.Text(
+                          "29-Apr-2025",
+                          style: pw.TextStyle(
+                            fontSize: 18,
+                            color: PdfColors.white,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
-      ),
-    );
-    final divider = pw.Divider(
-      thickness: 1,
-      color: PdfColors.grey,
-    );
+        ));
+    // final divider = pw.Divider(
+    //   thickness: 1,
+    //   color: PdfColors.grey,
+    // );
     final addressArea = pw.Container(
       height: 100,
       child: pw.Row(
@@ -220,33 +240,47 @@ class PdfTemplate2 {
       ),
     );
     final gap15 = pw.SizedBox(height: 15);
-    final gap80 = pw.SizedBox(height: 80);
-    final fullgap = pw.Expanded(
-      flex: 1,
-      fit: pw.FlexFit.tight,
-      child: pw.Container(),
-    );
+    final gap40 = pw.SizedBox(height: 40);
+    final fullgap = pw.SizedBox(height: 30);
 
     widgets.add(headerarea);
-    widgets.add(divider);
+    // widgets.add(divider);
     widgets.add(addressArea);
     widgets.add(gap15);
     widgets.add(table());
-    widgets.add(gap80);
+    widgets.add(gap40);
     widgets.add(totalprice());
 
-    widgets.add(fullgap);
+    // widgets.add(fullgap);
+
+    final pdfTheme = pw.PageTheme(
+      pageFormat: PdfPageFormat.a4,
+      margin: pw.EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+      buildBackground: (context) => pw.FullPage(
+        ignoreMargins: true,
+      ),
+    );
 
     pdf.addPage(
       pw.MultiPage(
-        pageFormat: PdfPageFormat.a4,
-        margin: pw.EdgeInsets.symmetric(
-          horizontal: 30,
-          vertical: 25,
-        ), // <<< REMOVE ALL MARGIN
-        build: (pw.Context context) {
-          return widgets;
-        },
+        pageTheme: pdfTheme,
+        build: (context) => [
+          headerarea, // No padding here
+          pw.Padding(
+            padding: pw.EdgeInsets.symmetric(
+                horizontal: 30,
+                vertical: 25), // Apply padding to all other widgets
+            child: pw.Column(
+              children: [
+                addressArea,
+                gap15,
+                table(),
+                gap40,
+                totalprice(),
+              ],
+            ),
+          ),
+        ],
       ),
     );
 
@@ -430,7 +464,7 @@ class PdfTemplate2 {
       children: <pw.TableRow>[
         pw.TableRow(
           decoration: pw.BoxDecoration(
-            color: PdfColors.black,
+            color: PdfColor.fromHex('#3498db'),
             // border: pw.Border.all(
             //   style: pw.BorderStyle.solid,
             //   color: PdfColors.black,

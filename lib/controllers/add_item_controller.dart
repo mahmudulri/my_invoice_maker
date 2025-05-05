@@ -7,11 +7,14 @@ class AddItemController extends GetxController {
   TextEditingController quantityController = TextEditingController();
   TextEditingController unitOfMeasureController = TextEditingController();
   TextEditingController unitDiscountController = TextEditingController();
+
   TextEditingController discountTypeController = TextEditingController();
   TextEditingController unitVatController = TextEditingController();
 
   // Make the itemTotalPrice observable
   var itemTotalPrice = '0'.obs;
+  String unitofmeasure = "";
+  String discountType = "";
 
   void calculateTotalPrice() {
     double unitPrice = double.tryParse(unitPriceController.text) ?? 0.0;
@@ -27,11 +30,10 @@ class AddItemController extends GetxController {
     double priceBeforeDiscount = unitPrice * quantity;
 
     // Check discount type (default to percentage if not set)
-    String discountType = discountTypeController.text.isEmpty
-        ? 'percentage'
-        : discountTypeController.text;
+    String discountType =
+        discountTypeController.text.isEmpty ? '%' : discountTypeController.text;
 
-    if (discountType == 'percentage') {
+    if (discountType == '%') {
       priceBeforeDiscount -= (priceBeforeDiscount * discount / 100);
     } else if (discountType == 'flat') {
       priceBeforeDiscount -= discount;

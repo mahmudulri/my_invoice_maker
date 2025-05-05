@@ -29,3 +29,38 @@ class TemplateDataController extends GetxController {
     },
   ];
 }
+
+class TemplateListController extends GetxController {
+  List templates = [
+    {
+      "name": "sample1",
+      "imglink": "assets/samples/sample1.png",
+      "ispremium": "no",
+    },
+    {
+      "name": "sample2",
+      "imglink": "assets/samples/sample2.png",
+      "ispremium": "no",
+    },
+    {
+      "name": "sample3",
+      "imglink": "assets/samples/sample3.png",
+      "ispremium": "no",
+    },
+    {
+      "name": "sample4",
+      "imglink": "assets/samples/sample4.png",
+      "ispremium": "yes",
+    },
+    {
+      "name": "sample5",
+      "imglink": "assets/samples/sample5.png",
+      "ispremium": "no",
+    },
+    {
+      "name": "sample6",
+      "imglink": "assets/samples/sample6.png",
+      "ispremium": "no",
+    },
+  ];
+}

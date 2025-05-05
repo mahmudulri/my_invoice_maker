@@ -115,39 +115,9 @@ class _MakeNewScreenState extends State<MakeNewScreen> {
         height: screenHeight,
         width: screenWidth,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
+          padding: EdgeInsets.symmetric(horizontal: 10),
           child: Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 5),
-                child: SizedBox(
-                  height: 20,
-                  width: screenWidth,
-                  child: Row(
-                    children: [
-                      Expanded(
-                          child: Text(
-                        "From",
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      )),
-                      SizedBox(
-                        width: 3,
-                      ),
-                      Expanded(
-                          child: Text(
-                        "Bill To",
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      )),
-                    ],
-                  ),
-                ),
-              ),
               //......................................From & To box Start.......................//
               Container(
                 height: 100,

@@ -14,7 +14,7 @@ import 'package:pdf/widgets.dart' as pw;
 //   TemplateController(),
 // );
 
-class PdfTemplate2 {
+class PdfTemplate5 {
   Future<Uint8List> generatePDF() async {
     final pdf = pw.Document();
     List<pw.Widget> widgets = [];
@@ -100,7 +100,7 @@ class PdfTemplate2 {
     );
     final divider = pw.Divider(
       thickness: 1,
-      color: PdfColors.grey,
+      color: PdfColor.fromHex('e74c3c'),
     );
     final addressArea = pw.Container(
       height: 100,
@@ -429,14 +429,13 @@ class PdfTemplate2 {
       },
       children: <pw.TableRow>[
         pw.TableRow(
-          decoration: pw.BoxDecoration(
-            color: PdfColors.black,
-            // border: pw.Border.all(
-            //   style: pw.BorderStyle.solid,
-            //   color: PdfColors.black,
-            //   width: 2,
-            // ),
-          ),
+          decoration: pw.BoxDecoration(color: PdfColor.fromHex('e74c3c')
+              // border: pw.Border.all(
+              //   style: pw.BorderStyle.solid,
+              //   color: PdfColors.black,
+              //   width: 2,
+              // ),
+              ),
           children: <pw.Widget>[
             pw.Padding(
               padding: pw.EdgeInsets.all(10.0),

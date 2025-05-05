@@ -8,15 +8,18 @@ import '../controllers/template_theme_controller.dart';
 class PdfTemplateScreen extends StatelessWidget {
   PdfTemplateScreen({super.key});
 
-  TemplateDataController templateDataController =
-      Get.put(TemplateDataController());
+  // TemplateDataController templateDataController =
+  //     Get.put(TemplateDataController());
 
   final TemplateController templateController = Get.put(TemplateController());
+  final TemplateListController templateListController =
+      Get.put(TemplateListController());
 
   @override
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xffbdc3c7),
       appBar: AppBar(title: Text("Select Template")),
       body: Obx(() {
         if (templateController.isLoading.value) {
@@ -26,16 +29,17 @@ class PdfTemplateScreen extends StatelessWidget {
         return Padding(
           padding: const EdgeInsets.all(8.0),
           child: GridView.builder(
-              padding: const EdgeInsets.all(16),
+              physics: BouncingScrollPhysics(),
+              padding: EdgeInsets.all(8),
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                childAspectRatio: 0.8,
+                childAspectRatio: 0.7,
                 crossAxisCount: 2,
-                crossAxisSpacing: 16,
-                mainAxisSpacing: 16,
+                crossAxisSpacing: 8,
+                mainAxisSpacing: 8,
               ),
-              itemCount: templateDataController.elements.length,
+              itemCount: templateListController.templates.length,
               itemBuilder: (context, index) {
-                final data = templateDataController.elements[index];
+                final data = templateListController.templates[index];
 
                 return Obx(() {
                   final isSelected =
@@ -43,18 +47,25 @@ class PdfTemplateScreen extends StatelessWidget {
 
                   return GestureDetector(
                     onTap: () {
-                      if (data["premium"] == "yes") {
-                        Get.snackbar("Premium Template",
-                            "Please upgrade to use this template!",
-                            snackPosition: SnackPosition.TOP,
-                            backgroundColor: Colors.amber.shade700,
-                            colorText: Colors.white,
-                            icon: Icon(Icons.lock, color: Colors.white),
-                            margin: EdgeInsets.all(12),
-                            borderRadius: 12,
-                            duration: Duration(seconds: 1));
+                      if (data["ispremium"] == "yes") {
+                        Get.snackbar(
+                          "Premium Template",
+                          "Please upgrade to use this template!",
+                          snackPosition: SnackPosition.TOP,
+                          backgroundColor: Colors.amber.shade700,
+                          colorText: Colors.white,
+                          icon: Icon(Icons.lock, color: Colors.white),
+                          margin: EdgeInsets.all(12),
+                          borderRadius: 12,
+                          duration: Duration(milliseconds: 1500),
+                        );
                       } else {
-                        templateController.setHeaderColor(data["color"], index);
+                        // ✅ Save selected template name and index
+                        box.write("selectedTemplateName", data["name"]);
+                        box.write("selectedTemplateIndex", index);
+
+                        // ✅ Update UI
+                        templateController.selectedIndex.value = index;
                       }
                     },
                     child: Stack(
@@ -62,8 +73,12 @@ class PdfTemplateScreen extends StatelessWidget {
                       children: [
                         Container(
                           decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: AssetImage(data["imglink"].toString()),
+                              fit: BoxFit.fill,
+                            ),
                             color: Colors.white,
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(6),
                           ),
                         ),
 
