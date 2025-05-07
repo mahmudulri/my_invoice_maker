@@ -20,8 +20,8 @@ class AddItemController extends GetxController {
     double unitPrice = double.tryParse(unitPriceController.text) ?? 0.0;
 
     // Default to quantity 1 if quantity is not set or is zero
-    int quantity = int.tryParse(quantityController.text) ?? 1;
-    quantity = quantity == 0 ? 1 : quantity;
+    double quantity = double.tryParse(quantityController.text) ?? 1;
+    quantity = quantity == 0 ? 1.0 : quantity;
 
     double discount = double.tryParse(unitDiscountController.text) ?? 0.0;
     double vat = double.tryParse(unitVatController.text) ?? 0.0;

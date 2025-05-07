@@ -5,6 +5,7 @@ class ItemListController extends GetxController {
   double discountedPrice = 0;
   double tax = 0.0;
   double taxmount = 0.0;
+  double shippingcost = 0.0;
 
   RxBool isloading = false.obs;
   RxBool subtotalloading = false.obs;
@@ -46,6 +47,9 @@ class ItemListController extends GetxController {
     // Apply tax
     taxmount = (priceAfterDiscount * tax) / 100;
     totalPrice.value = priceAfterDiscount + taxmount; // Update total price
+
+    // Calculate total price including tax and shipping
+    totalPrice.value = priceAfterDiscount + taxmount + shippingcost;
 
     isloading.value = false; // Stop loading
   }

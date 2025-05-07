@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:invoice_maker/draft/draft.dart';
 
 import '../controllers/add_item_controller.dart';
 import '../controllers/item_list_controller.dart';
@@ -18,8 +19,8 @@ class NewItemsScreen extends StatelessWidget {
     'Dozen',
     'Bundle',
     'Kg',
-    'G',
-    'L',
+    'Gram (G)',
+    'Litter',
     'Ml',
     'Case',
     'Pallet',
@@ -29,13 +30,11 @@ class NewItemsScreen extends StatelessWidget {
   ];
 
   List<String> discountType = [
-    'flat',
+    'Flat',
     '%',
   ];
 
   final ItemListController itemListController = Get.put(ItemListController());
-
-  String unitName = "None";
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +67,9 @@ class NewItemsScreen extends StatelessWidget {
         height: screenHeight,
         width: screenWidth,
         child: Padding(
-          padding: const EdgeInsets.all(18.0),
+          padding: EdgeInsets.symmetric(
+            horizontal: 18,
+          ),
           child: Column(
             children: [
               Container(

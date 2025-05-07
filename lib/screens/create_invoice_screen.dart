@@ -5,6 +5,7 @@ import 'package:invoice_maker/utils/colors.dart';
 
 import '../controllers/address_controller.dart';
 import '../controllers/billto_controller.dart';
+import '../controllers/invoice_data_controller.dart';
 import '../controllers/item_list_controller.dart';
 import '../new_address.dart';
 import '../pdftemplates/pdftemplate1.dart';
@@ -28,6 +29,19 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
     permanent: true,
   );
 
+  final InvoiceDataController invoiceDataController =
+      Get.put(InvoiceDataController());
+
+  List statusList = [
+    "Unpaid",
+    "Paid",
+    "Due",
+  ];
+
+  TextEditingController vatController = TextEditingController();
+
+  TextEditingController discountController = TextEditingController();
+  TextEditingController taxController = TextEditingController();
   final PdfTemplate1 pdfTemplate1 = PdfTemplate1();
   @override
   Widget build(BuildContext context) {
@@ -355,7 +369,7 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
                               ),
                               width: screenWidth,
                               child: Padding(
-                                padding: const EdgeInsets.all(5.0),
+                                padding: EdgeInsets.all(5.0),
                                 child: ListView.separated(
                                   physics: NeverScrollableScrollPhysics(),
                                   separatorBuilder: (context, index) {
@@ -542,16 +556,703 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
                       height: 10,
                     ),
 
-                    Text(
-                      "Total",
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 18,
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Total",
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 18,
+                          ),
+                        ),
+                        Visibility(
+                          visible:
+                              invoiceDataController.invoiceStatus.toString() !=
+                                  "Status",
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: invoiceDataController.invoiceStatus
+                                          .toString() ==
+                                      "Paid"
+                                  ? Colors.green
+                                  : Colors.red,
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 8, vertical: 4),
+                              child: Text(
+                                invoiceDataController.invoiceStatus.toString(),
+                                style: TextStyle(
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
 
                     SizedBox(
                       height: 10,
+                    ),
+
+                    //.............................Status ...................................//
+                    SizedBox(
+                      height: 40,
+                      width: screenWidth,
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      backgroundColor: Colors.transparent,
+                                      contentPadding: EdgeInsets.all(0.0),
+                                      content: Container(
+                                        height: 160,
+                                        width: screenWidth,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                        child: Padding(
+                                          padding: EdgeInsets.all(8.0),
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Text("Apply your Discount in %"),
+                                              SizedBox(
+                                                height: 8,
+                                              ),
+                                              Container(
+                                                height: 50,
+                                                width: 100,
+                                                decoration: BoxDecoration(
+                                                  border: Border.all(
+                                                    width: 1,
+                                                    color: Colors.grey,
+                                                  ),
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                ),
+                                                child: Padding(
+                                                  padding: EdgeInsets.symmetric(
+                                                    horizontal: 10,
+                                                    vertical: 8,
+                                                  ),
+                                                  child: TextField(
+                                                    onChanged: (value) {
+                                                      // Check if the input value is empty; if so, set discount to 0.0
+                                                      itemListController
+                                                          .discount = value
+                                                              .isEmpty
+                                                          ? 0.00
+                                                          : double.parse(value);
+                                                      itemListController
+                                                          .calculateTotalPrice();
+                                                    },
+                                                    controller:
+                                                        discountController,
+                                                    textAlign: TextAlign.center,
+                                                    keyboardType:
+                                                        TextInputType.number,
+                                                    decoration: InputDecoration(
+                                                      border: InputBorder.none,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                height: 10,
+                                              ),
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceEvenly,
+                                                children: [
+                                                  GestureDetector(
+                                                    onTap: () {
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: Container(
+                                                      height: 40,
+                                                      width: 100,
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.grey,
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10),
+                                                      ),
+                                                      child: Center(
+                                                        child: Text(
+                                                          "Cancel",
+                                                          style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  GestureDetector(
+                                                    onTap: () {
+                                                      Navigator.pop(context);
+                                                      // if (discountController
+                                                      //     .text.isNotEmpty) {
+                                                      //   itemListController
+                                                      //           .discount =
+                                                      //       double.parse(
+                                                      //           discountController
+                                                      //               .text);
+
+                                                      //   print(itemListController
+                                                      //       .discount
+                                                      //       .toString());
+                                                      //   itemListController
+                                                      //       .getTotalPrice();
+                                                      // } else {
+                                                      //   print("Add Data");
+                                                      // }
+                                                    },
+                                                    child: Container(
+                                                      height: 40,
+                                                      width: 100,
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.green,
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10),
+                                                      ),
+                                                      child: Center(
+                                                        child: Text(
+                                                          "OK",
+                                                          style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
+                              child: Container(
+                                height: 35,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(
+                                    width: 1,
+                                    color: Colors.grey.shade300,
+                                  ),
+                                ),
+                                child: Center(
+                                  child: Text("Discount"),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      backgroundColor: Colors.transparent,
+                                      contentPadding: EdgeInsets.all(0.0),
+                                      content: Container(
+                                        height: 160,
+                                        width: screenWidth,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                        child: Padding(
+                                          padding: EdgeInsets.all(8.0),
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Text("Apply your vat in %"),
+                                              SizedBox(
+                                                height: 8,
+                                              ),
+                                              Container(
+                                                height: 50,
+                                                width: 100,
+                                                decoration: BoxDecoration(
+                                                  border: Border.all(
+                                                    width: 1,
+                                                    color: Colors.grey,
+                                                  ),
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                ),
+                                                child: Padding(
+                                                  padding: EdgeInsets.symmetric(
+                                                    horizontal: 10,
+                                                    vertical: 8,
+                                                  ),
+                                                  child: TextField(
+                                                    onChanged: (value) {
+                                                      itemListController
+                                                          .tax = value
+                                                              .isEmpty
+                                                          ? 0.00
+                                                          : double.parse(value);
+                                                      itemListController
+                                                          .calculateTotalPrice();
+                                                    },
+                                                    controller: taxController,
+                                                    textAlign: TextAlign.center,
+                                                    keyboardType:
+                                                        TextInputType.number,
+                                                    decoration: InputDecoration(
+                                                      border: InputBorder.none,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                height: 10,
+                                              ),
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceEvenly,
+                                                children: [
+                                                  GestureDetector(
+                                                    onTap: () {
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: Container(
+                                                      height: 40,
+                                                      width: 100,
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.grey,
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10),
+                                                      ),
+                                                      child: Center(
+                                                        child: Text(
+                                                          "Cancel",
+                                                          style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  GestureDetector(
+                                                    onTap: () {
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: Container(
+                                                      height: 40,
+                                                      width: 100,
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.green,
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10),
+                                                      ),
+                                                      child: Center(
+                                                        child: Text(
+                                                          "Apply",
+                                                          style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
+                              child: Container(
+                                height: 35,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(
+                                    width: 1,
+                                    color: Colors.grey.shade300,
+                                  ),
+                                ),
+                                child: Center(
+                                  child: Text("Tax"),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            flex: 2,
+                            child: GestureDetector(
+                              onTap: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      backgroundColor: Colors.transparent,
+                                      contentPadding: EdgeInsets.all(0.0),
+                                      content: Container(
+                                        height: 160,
+                                        width: screenWidth,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                        child: Padding(
+                                          padding: EdgeInsets.all(8.0),
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Text("Enter your shipping cost"),
+                                              SizedBox(
+                                                height: 8,
+                                              ),
+                                              Container(
+                                                height: 50,
+                                                width: 100,
+                                                decoration: BoxDecoration(
+                                                  border: Border.all(
+                                                    width: 1,
+                                                    color: Colors.grey,
+                                                  ),
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                ),
+                                                child: Padding(
+                                                  padding: EdgeInsets.symmetric(
+                                                    horizontal: 10,
+                                                    vertical: 8,
+                                                  ),
+                                                  child: TextField(
+                                                    onChanged: (value) {
+                                                      itemListController
+                                                          .shippingcost = value
+                                                              .isEmpty
+                                                          ? 0.00
+                                                          : double.parse(value);
+                                                      itemListController
+                                                          .calculateTotalPrice();
+                                                    },
+                                                    controller: taxController,
+                                                    textAlign: TextAlign.center,
+                                                    keyboardType:
+                                                        TextInputType.number,
+                                                    decoration: InputDecoration(
+                                                      border: InputBorder.none,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                height: 10,
+                                              ),
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceEvenly,
+                                                children: [
+                                                  GestureDetector(
+                                                    onTap: () {
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: Container(
+                                                      height: 40,
+                                                      width: 100,
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.grey,
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10),
+                                                      ),
+                                                      child: Center(
+                                                        child: Text(
+                                                          "Cancel",
+                                                          style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  GestureDetector(
+                                                    onTap: () {
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: Container(
+                                                      height: 40,
+                                                      width: 100,
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.green,
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10),
+                                                      ),
+                                                      child: Center(
+                                                        child: Text(
+                                                          "Apply",
+                                                          style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
+                              child: Container(
+                                height: 35,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(
+                                    width: 1,
+                                    color: Colors.grey.shade300,
+                                  ),
+                                ),
+                                child: Center(
+                                  child: Text("Shipping cost"),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      backgroundColor: Colors.transparent,
+                                      contentPadding: EdgeInsets.all(0.0),
+                                      content: Container(
+                                        height: 250,
+                                        width: screenWidth,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                        child: Padding(
+                                          padding: EdgeInsets.all(8.0),
+                                          // child: ListView.builder(
+                                          //   physics: BouncingScrollPhysics(),
+                                          //   itemCount: statusList.length,
+                                          //   itemBuilder: (context, index) {
+                                          //     return GestureDetector(
+                                          //       onTap: () {
+                                          //         setState(() {
+                                          //           invoiceDataController
+                                          //                   .invoiceStatus =
+                                          //               statusList[index];
+                                          //         });
+                                          //       },
+                                          //       child: Container(
+                                          //         margin: EdgeInsets.only(
+                                          //             bottom: 5),
+                                          //         height: 40,
+                                          //         width: screenWidth,
+                                          //         decoration: BoxDecoration(
+                                          //           color: Colors.white,
+                                          //           borderRadius:
+                                          //               BorderRadius.circular(
+                                          //                   8),
+                                          //           border: Border.all(
+                                          //             width: 1,
+                                          //             color:
+                                          //                 Colors.grey.shade300,
+                                          //           ),
+                                          //         ),
+                                          //         child: Center(
+                                          //           child: Text(
+                                          //             statusList[index],
+                                          //           ),
+                                          //         ),
+                                          //       ),
+                                          //     );
+                                          //   },
+                                          // ),
+
+                                          child: Column(
+                                            children: [
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceEvenly,
+                                                children: [
+                                                  Container(
+                                                    height: 45,
+                                                    width: 120,
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.green,
+                                                    ),
+                                                    child: Center(
+                                                      child: Text(
+                                                        "Paid",
+                                                        style: TextStyle(
+                                                          color: Colors.white,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Container(
+                                                    height: 45,
+                                                    width: 120,
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.red,
+                                                    ),
+                                                    child: Center(
+                                                      child: Text(
+                                                        "Unpaid",
+                                                        style: TextStyle(
+                                                          color: Colors.white,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              SizedBox(
+                                                height: 20,
+                                              ),
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceEvenly,
+                                                children: [
+                                                  Text("Due : "),
+                                                  Container(
+                                                    height: 45,
+                                                    width: 100,
+                                                    decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              6),
+                                                      border: Border.all(
+                                                        width: 1,
+                                                        color: Colors.grey,
+                                                      ),
+                                                    ),
+                                                    child: Padding(
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                              horizontal: 5),
+                                                      child: TextField(
+                                                        keyboardType:
+                                                            TextInputType
+                                                                .number,
+                                                        decoration:
+                                                            InputDecoration(
+                                                          hintText: "Amount",
+                                                          border:
+                                                              InputBorder.none,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              SizedBox(
+                                                height: 20,
+                                              ),
+                                              Container(
+                                                height: 45,
+                                                width: 130,
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(6),
+                                                  border: Border.all(
+                                                    width: 1,
+                                                    color: Colors.grey,
+                                                  ),
+                                                  color: Colors.grey,
+                                                ),
+                                                child: Center(
+                                                  child: Text(
+                                                    "Calculate Due",
+                                                    style: TextStyle(
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
+                              child: Container(
+                                height: 35,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(
+                                    width: 1,
+                                    color: Colors.grey.shade300,
+                                  ),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    invoiceDataController.invoiceStatus
+                                        .toString(),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                     Container(
                       // height: 200,
@@ -598,7 +1299,7 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
                                               .subtotalloading.value ==
                                           false
                                       ? Text(
-                                          itemListController.totalPrice.value
+                                          itemListController.subTotalPrice.value
                                               .toStringAsFixed(2),
                                           style: TextStyle(
                                             fontWeight: FontWeight.w800,
@@ -647,6 +1348,25 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
                                 ),
                               ],
                             ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Shipping cost : ",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 13,
+                                  ),
+                                ),
+                                Text(
+                                  itemListController.shippingcost.toString(),
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 13,
+                                  ),
+                                ),
+                              ],
+                            ),
                             Divider(
                               thickness: 1,
                             ),
@@ -664,7 +1384,7 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
                                   () => itemListController.isloading.value ==
                                           false
                                       ? Text(
-                                          itemListController.subTotalPrice.value
+                                          itemListController.totalPrice.value
                                               .toStringAsFixed(2),
                                           style: TextStyle(
                                             fontWeight: FontWeight.w800,
