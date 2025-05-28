@@ -52,7 +52,7 @@ class AddProductController extends GetxController {
       if (response.statusCode == 201) {
         productController.finallist.clear();
         productController.initialpage = 1;
-        productController.fetchclients();
+        productController.fetchproduct();
         nameController.clear();
         unitPriceController.clear();
         typeController.clear();

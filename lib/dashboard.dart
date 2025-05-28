@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -49,314 +51,343 @@ class _DashBoardState extends State<DashBoard> {
   }
 
   final categorycontroller = Get.find<CategoryController>();
+
+  Future<bool> showExitPopup() async {
+    return await showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text('Exit App'),
+            content: Text('Do you want to exit an App?'),
+            actions: [
+              ElevatedButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: Text('No'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  exit(0);
+                },
+                child: Text('Yes'),
+              ),
+            ],
+          ),
+        ) ??
+        false;
+  }
+
   @override
   Widget build(BuildContext context) {
     // Move screenHeight and screenWidth outside of build to avoid rebuilds
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
 
-    return Scaffold(
-      backgroundColor: AppColors.scaffoldColor,
-      drawer: MyDrawer(),
-      key: _scaffoldKey,
-      body: Container(
-        height: screenHeight,
-        width: screenWidth,
-        child: SizedBox(
+    // ignore: deprecated_member_use
+    return WillPopScope(
+      onWillPop: showExitPopup,
+      child: Scaffold(
+        backgroundColor: AppColors.scaffoldColor,
+        drawer: MyDrawer(),
+        key: _scaffoldKey,
+        body: Container(
           height: screenHeight,
           width: screenWidth,
-          child: Stack(
-            children: [
-              Container(
-                height: 350,
-                width: screenWidth,
-                decoration: BoxDecoration(
-                  color: AppColors.primaryColor,
-                  borderRadius: BorderRadius.vertical(
-                    bottom: Radius.circular(120),
+          child: SizedBox(
+            height: screenHeight,
+            width: screenWidth,
+            child: Stack(
+              children: [
+                Container(
+                  height: 350,
+                  width: screenWidth,
+                  decoration: BoxDecoration(
+                    color: AppColors.primaryColor,
+                    borderRadius: BorderRadius.vertical(
+                      bottom: Radius.circular(120),
+                    ),
                   ),
-                ),
-                child: Padding(
-                  padding: EdgeInsets.only(
-                    top: 40,
-                    left: 15,
-                    right: 15,
-                  ),
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              _scaffoldKey.currentState?.openDrawer();
-                            },
-                            child: CircleAvatar(
-                              backgroundColor: Colors.white24,
-                              child: Icon(
-                                Icons.sort,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            width: 50,
-                          ),
-                          Text(
-                            "Mega Invoice Maker",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 20,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 30,
-                      ),
-                      Container(
-                        height: 90,
-                        width: screenWidth,
-                        child: Row(
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                      top: 40,
+                      left: 15,
+                      right: 15,
+                    ),
+                    child: Column(
+                      children: [
+                        Row(
                           children: [
-                            Expanded(
-                              flex: 1,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color:
-                                      AppColors.scaffoldColor.withOpacity(0.20),
-                                  borderRadius: BorderRadius.circular(
-                                      8), // optional for rounded corners
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black
-                                          .withOpacity(0.1), // soft shadow
-                                      blurRadius: 10,
-                                      spreadRadius: 2,
-                                      offset: Offset(0, 5), // vertical shadow
-                                    ),
-                                  ],
-                                ),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      "Total Unpaid",
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: 15,
-                                    ),
-                                    Text(
-                                      "0.00 tk",
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w800,
-                                      ),
-                                    ),
-                                  ],
+                            GestureDetector(
+                              onTap: () {
+                                _scaffoldKey.currentState?.openDrawer();
+                              },
+                              child: CircleAvatar(
+                                backgroundColor: Colors.white24,
+                                child: Icon(
+                                  Icons.sort,
+                                  color: Colors.white,
                                 ),
                               ),
                             ),
                             SizedBox(
-                              width: 10,
+                              width: 50,
                             ),
-                            Expanded(
-                              flex: 1,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color:
-                                      AppColors.scaffoldColor.withOpacity(0.20),
-                                  borderRadius: BorderRadius.circular(
-                                      8), // optional for rounded corners
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black
-                                          .withOpacity(0.1), // soft shadow
-                                      blurRadius: 10,
-                                      spreadRadius: 2,
-                                      offset: Offset(0, 5), // vertical shadow
-                                    ),
-                                  ],
-                                ),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      "Total Overdue",
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: 15,
-                                    ),
-                                    Text(
-                                      "0.00 tk",
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w800,
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                            Text(
+                              "Mega Invoice Maker",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                                fontWeight: FontWeight.w500,
                               ),
                             ),
                           ],
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Positioned(
-                top: 250,
-                left: 0,
-                right: 0,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 15),
-                  child: Container(
-                    height: screenHeight * 0.550,
-                    width: screenWidth,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                        top: 40,
-                      ),
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                        SizedBox(
+                          height: 30,
+                        ),
+                        Container(
+                          height: 90,
+                          width: screenWidth,
+                          child: Row(
                             children: [
-                              MenuButton(
-                                buttonName: "Create Invoice",
-                                imagelink: "assets/icons/new-invoice.png",
-                                // onpressed: () {
-                                //   Get.to(() => CreateInvoiceScreen());
-                                // },
-                                onpressed: () {
-                                  Get.to(() => CreateInvoiceScreen());
-                                },
+                              Expanded(
+                                flex: 1,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: AppColors.scaffoldColor
+                                        .withOpacity(0.20),
+                                    borderRadius: BorderRadius.circular(
+                                        8), // optional for rounded corners
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black
+                                            .withOpacity(0.1), // soft shadow
+                                        blurRadius: 10,
+                                        spreadRadius: 2,
+                                        offset: Offset(0, 5), // vertical shadow
+                                      ),
+                                    ],
+                                  ),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        "Total Unpaid",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 15,
+                                      ),
+                                      Text(
+                                        "0.00 tk",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w800,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ),
                               SizedBox(
                                 width: 10,
                               ),
-                              MenuButton(
-                                buttonName: "View all Invoice",
-                                imagelink: "assets/icons/invoice.png",
-                                onpressed: () {
-                                  Get.to(() => AllInvoicesList());
-                                },
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              MenuButton(
-                                buttonName: "Clients",
-                                imagelink: "assets/icons/down-payment.png",
-                                // onpressed: () async {
-                                //   final data = await pdfTemplate1.generatePDF();
-                                //   pdfTemplate1.savePdfFile("Inovice maker", data);
-                                // },
-                                onpressed: () {
-                                  Get.toNamed(clientscreen);
-                                },
+                              Expanded(
+                                flex: 1,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: AppColors.scaffoldColor
+                                        .withOpacity(0.20),
+                                    borderRadius: BorderRadius.circular(
+                                        8), // optional for rounded corners
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black
+                                            .withOpacity(0.1), // soft shadow
+                                        blurRadius: 10,
+                                        spreadRadius: 2,
+                                        offset: Offset(0, 5), // vertical shadow
+                                      ),
+                                    ],
+                                  ),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        "Total Overdue",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 15,
+                                      ),
+                                      Text(
+                                        "0.00 tk",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w800,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ),
                             ],
                           ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              MenuButton(
-                                buttonName: "PDF",
-                                imagelink: "assets/icons/down-payment.png",
-                                onpressed: () async {
-                                  final data = await pdfTemplate1.generatePDF();
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          PdfPreviewScreen(pdfBytes: data),
-                                    ),
-                                  );
-                                },
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              MenuButton(
-                                buttonName: "Templates",
-                                imagelink: "assets/icons/down-payment.png",
-                                onpressed: () {
-                                  Get.to(() => PdfTemplateScreen());
-                                },
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              MenuButton(
-                                buttonName: "Template pageview",
-                                imagelink: "assets/icons/down-payment.png",
-                                onpressed: () {
-                                  Get.to(() => Pdfpageview());
-                                },
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              MenuButton(
-                                buttonName: "Products",
-                                imagelink: "assets/icons/down-payment.png",
-                                onpressed: () {
-                                  Get.toNamed(productscreen);
-                                },
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              MenuButton(
-                                buttonName: "Settings",
-                                imagelink: "assets/icons/down-payment.png",
-                                onpressed: () {},
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              MenuButton(
-                                buttonName: "My Shop",
-                                imagelink: "assets/icons/down-payment.png",
-                                onpressed: () {
-                                  Get.toNamed(myshopscreen);
-                                },
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
-              ),
-            ],
+                Positioned(
+                  top: 250,
+                  left: 0,
+                  right: 0,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 15),
+                    child: Container(
+                      height: screenHeight * 0.550,
+                      width: screenWidth,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                          top: 40,
+                        ),
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                MenuButton(
+                                  buttonName: "Create Invoice",
+                                  imagelink: "assets/icons/new-invoice.png",
+                                  // onpressed: () {
+                                  //   Get.to(() => CreateInvoiceScreen());
+                                  // },
+                                  onpressed: () {
+                                    Get.to(() => CreateInvoiceScreen());
+                                  },
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                MenuButton(
+                                  buttonName: "View all Invoice",
+                                  imagelink: "assets/icons/invoice.png",
+                                  onpressed: () {
+                                    Get.to(() => AllInvoicesList());
+                                  },
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                MenuButton(
+                                  buttonName: "Clients",
+                                  imagelink: "assets/icons/down-payment.png",
+                                  // onpressed: () async {
+                                  //   final data = await pdfTemplate1.generatePDF();
+                                  //   pdfTemplate1.savePdfFile("Inovice maker", data);
+                                  // },
+                                  onpressed: () {
+                                    Get.toNamed(clientscreen);
+                                  },
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                MenuButton(
+                                  buttonName: "PDF",
+                                  imagelink: "assets/icons/down-payment.png",
+                                  onpressed: () async {
+                                    final data =
+                                        await pdfTemplate1.generatePDF();
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            PdfPreviewScreen(pdfBytes: data),
+                                      ),
+                                    );
+                                  },
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                MenuButton(
+                                  buttonName: "Templates",
+                                  imagelink: "assets/icons/down-payment.png",
+                                  onpressed: () {
+                                    Get.to(() => PdfTemplateScreen());
+                                  },
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                MenuButton(
+                                  buttonName: "Template pageview",
+                                  imagelink: "assets/icons/down-payment.png",
+                                  onpressed: () {
+                                    Get.to(() => Pdfpageview());
+                                  },
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                MenuButton(
+                                  buttonName: "Products",
+                                  imagelink: "assets/icons/down-payment.png",
+                                  onpressed: () {
+                                    Get.toNamed(productscreen);
+                                  },
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                MenuButton(
+                                  buttonName: "Settings",
+                                  imagelink: "assets/icons/down-payment.png",
+                                  onpressed: () {},
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                MenuButton(
+                                  buttonName: "My Shop",
+                                  imagelink: "assets/icons/down-payment.png",
+                                  onpressed: () {
+                                    Get.toNamed(myshopscreen);
+                                  },
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

@@ -21,7 +21,7 @@ class ProductListController extends GetxController {
 
   var allproductlist = ProductModel().obs;
 
-  void fetchclients() async {
+  void fetchproduct() async {
     try {
       isLoading(true);
       await ProdcutlistApi().fetchproductlist(initialpage).then((value) {

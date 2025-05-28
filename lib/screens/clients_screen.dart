@@ -4,8 +4,10 @@ import 'package:get/get.dart';
 import 'package:invoice_maker/controllers/add_client_controller.dart';
 import 'package:invoice_maker/controllers/clinetlist_controller.dart';
 import 'package:invoice_maker/utils/colors.dart';
+import 'package:invoice_maker/widgets/custom_text.dart';
 
 import '../invoicecontrollers/billto_controller.dart';
+import '../widgets/default_button.dart';
 
 class ClientsScreen extends StatefulWidget {
   ClientsScreen({super.key});
@@ -22,6 +24,7 @@ class _ClientsScreenState extends State<ClientsScreen> {
     // TODO: implement initState
     super.initState();
     clientListController.finallist.clear();
+    clientListController.initialpage = 1;
     clientListController.fetchclients();
   }
 
@@ -64,18 +67,17 @@ class _ClientsScreenState extends State<ClientsScreen> {
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
-      backgroundColor: Colors.white,
+      resizeToAvoidBottomInset: false,
+      backgroundColor: Color(0xffF1F3FF),
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        surfaceTintColor: Colors.white,
+        backgroundColor: Color(0xffF1F3FF),
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            GestureDetector(
-              onTap: () {
-                clientListController.finallist.clear();
-                clientListController.fetchclients();
-              },
-              child: Text("Client List"),
+            KText(
+              text: "Client List",
+              fontSize: 22,
             ),
             GestureDetector(
               onTap: () {
@@ -91,7 +93,7 @@ class _ClientsScreenState extends State<ClientsScreen> {
               },
               child: CircleAvatar(
                 radius: 18,
-                backgroundColor: Colors.black,
+                backgroundColor: AppColors.primaryColor,
                 child: Icon(
                   Icons.add,
                   color: Colors.white,
@@ -101,17 +103,55 @@ class _ClientsScreenState extends State<ClientsScreen> {
           ],
         ),
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: SizedBox(
-              height: screenHeight,
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+        child: Column(
+          children: [
+            Container(
+              height: 50,
               width: screenWidth,
-              child: Obx(
-                () => clientListController.isLoading.value == false
-                    ? Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: ListView.separated(
+              decoration: BoxDecoration(
+                border: Border.all(
+                  width: 1,
+                  color: Colors.grey.shade400,
+                ),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          hintText: "Search by name or phone",
+                          hintStyle: TextStyle(
+                            fontSize: 17,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Icon(
+                      Icons.search,
+                      size: 35,
+                      color: Colors.grey.shade600,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 8,
+            ),
+            Expanded(
+              child: SizedBox(
+                height: screenHeight,
+                width: screenWidth,
+                child: Obx(
+                  () => clientListController.isLoading.value == false
+                      ? ListView.separated(
                           separatorBuilder: (context, index) {
                             return SizedBox(
                               height: 5,
@@ -133,27 +173,175 @@ class _ClientsScreenState extends State<ClientsScreen> {
                               },
                               child: Container(
                                 decoration: BoxDecoration(
-                                  border: Border.all(
-                                    width: 1,
-                                    color: Colors.grey,
-                                  ),
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(
+                                    12,
+                                  ), // smoother curve
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey
+                                          .withOpacity(0.1), // soft shadow
+                                      blurRadius: 2,
+                                      spreadRadius: 2,
+                                      offset: Offset(
+                                          0, 2), // subtle vertical shadow
+                                    ),
+                                  ],
                                 ),
                                 width: screenWidth,
                                 child: Padding(
                                   padding: EdgeInsets.all(8.0),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                  child: Row(
                                     children: [
-                                      Text(
-                                        client.name.toString(),
+                                      Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              KText(
+                                                text: "Name : ",
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w400,
+                                              ),
+                                              KText(
+                                                text: client.name.toString(),
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w400,
+                                              ),
+                                            ],
+                                          ),
+                                          Row(
+                                            children: [
+                                              KText(
+                                                text: "Phone Number : ",
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w400,
+                                              ),
+                                              KText(
+                                                text: client.phoneNumber
+                                                    .toString(),
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w400,
+                                              ),
+                                            ],
+                                          ),
+                                          Row(
+                                            children: [
+                                              KText(
+                                                text: "Address : ",
+                                                fontSize: 13,
+                                                fontWeight: FontWeight.w400,
+                                              ),
+                                              KText(
+                                                text: client.address.toString(),
+                                                fontSize: 13,
+                                                fontWeight: FontWeight.w400,
+                                              ),
+                                            ],
+                                          ),
+                                        ],
                                       ),
-                                      Text(
-                                        client.phoneNumber.toString(),
-                                      ),
-                                      Text(
-                                        client.address.toString(),
+                                      Spacer(),
+                                      Padding(
+                                        padding: const EdgeInsets.all(3.0),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            Icon(Icons.edit),
+                                            Divider(),
+                                            InkWell(
+                                              onTap: () {
+                                                showDialog(
+                                                  context: context,
+                                                  builder: (context) {
+                                                    return AlertDialog(
+                                                      contentPadding:
+                                                          EdgeInsets.all(0),
+                                                      content: Container(
+                                                        height: 220,
+                                                        width: screenWidth,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          color: Colors.white,
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(10),
+                                                        ),
+                                                        child: Column(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceEvenly,
+                                                          children: [
+                                                            KText(
+                                                              text:
+                                                                  "Do you want to Delete ?",
+                                                              fontSize: 18,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                            ),
+                                                            Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .symmetric(
+                                                                      horizontal:
+                                                                          20),
+                                                              child: Row(
+                                                                children: [
+                                                                  Expanded(
+                                                                    child:
+                                                                        DefaultButton(
+                                                                      buttonName:
+                                                                          "No",
+                                                                      mycolor:
+                                                                          Colors
+                                                                              .grey,
+                                                                      onpressed:
+                                                                          () {
+                                                                        Navigator.pop(
+                                                                            context);
+                                                                      },
+                                                                    ),
+                                                                  ),
+                                                                  SizedBox(
+                                                                    width: 10,
+                                                                  ),
+                                                                  Expanded(
+                                                                    child:
+                                                                        DefaultButton(
+                                                                      buttonName:
+                                                                          "Yes",
+                                                                      mycolor:
+                                                                          AppColors
+                                                                              .primaryColor,
+                                                                      onpressed:
+                                                                          () {
+                                                                        Navigator.pop(
+                                                                            context);
+                                                                      },
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    );
+                                                  },
+                                                );
+                                              },
+                                              child: Icon(
+                                                Icons.delete,
+                                                color: Colors.red.shade300,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -161,17 +349,17 @@ class _ClientsScreenState extends State<ClientsScreen> {
                               ),
                             );
                           },
+                        )
+                      : Center(
+                          child: CircularProgressIndicator(),
                         ),
-                      )
-                    : Center(
-                        child: CircularProgressIndicator(),
-                      ),
+                ),
               ),
             ),
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10),
-            child: GestureDetector(
+            SizedBox(
+              height: 8,
+            ),
+            GestureDetector(
               onTap: () {
                 if (clientListController
                         .allClientList.value.pagination!.currentPage ==
@@ -194,7 +382,7 @@ class _ClientsScreenState extends State<ClientsScreen> {
                 height: 50,
                 width: screenWidth,
                 decoration: BoxDecoration(
-                  color: Colors.grey.shade300,
+                  color: AppColors.primaryColor,
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Center(
@@ -205,18 +393,18 @@ class _ClientsScreenState extends State<ClientsScreen> {
                           : "Loading",
                       style: TextStyle(
                         fontSize: 22,
-                        color: AppColors.primaryColor,
+                        color: Colors.white,
                       ),
                     ),
                   ),
                 ),
               ),
             ),
-          ),
-          SizedBox(
-            height: 5,
-          ),
-        ],
+            SizedBox(
+              height: 5,
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -26,7 +26,7 @@ class _ProductScreenState extends State<ProductScreen> {
     super.initState();
     productController.finallist.clear();
     productController.initialpage = 1;
-    productController.fetchclients();
+    productController.fetchproduct();
   }
 
   AddProductController addProductController = Get.put(AddProductController());
@@ -40,6 +40,7 @@ class _ProductScreenState extends State<ProductScreen> {
     var screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: Color(0xffF1F3FF),
       appBar: AppBar(
         surfaceTintColor: Color(0xffF1F3FF),
@@ -108,7 +109,7 @@ class _ProductScreenState extends State<ProductScreen> {
         height: screenHeight,
         width: screenWidth,
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
           child: Column(
             children: [
               Container(
@@ -131,13 +132,17 @@ class _ProductScreenState extends State<ProductScreen> {
                             border: InputBorder.none,
                             hintText: "Search product by name",
                             hintStyle: TextStyle(
-                              fontSize: 16,
+                              fontSize: 17,
                               fontWeight: FontWeight.w400,
                             ),
                           ),
                         ),
                       ),
-                      Icon(Icons.search),
+                      Icon(
+                        Icons.search,
+                        size: 35,
+                        color: Colors.grey.shade600,
+                      ),
                     ],
                   ),
                 ),
@@ -280,14 +285,14 @@ class _ProductScreenState extends State<ProductScreen> {
                                                                 const EdgeInsets
                                                                     .symmetric(
                                                                     horizontal:
-                                                                        10),
+                                                                        20),
                                                             child: Row(
                                                               children: [
                                                                 Expanded(
                                                                   child:
                                                                       DefaultButton(
                                                                     buttonName:
-                                                                        "Cancel",
+                                                                        "No",
                                                                     mycolor:
                                                                         Colors
                                                                             .grey,
@@ -305,7 +310,7 @@ class _ProductScreenState extends State<ProductScreen> {
                                                                   child:
                                                                       DefaultButton(
                                                                     buttonName:
-                                                                        "Confirm",
+                                                                        "Yes",
                                                                     mycolor:
                                                                         AppColors
                                                                             .primaryColor,
@@ -366,7 +371,7 @@ class _ProductScreenState extends State<ProductScreen> {
                         fontSize: 16.0);
                   } else {
                     productController.initialpage++;
-                    productController.fetchclients();
+                    productController.fetchproduct();
                   }
                 },
                 child: Container(

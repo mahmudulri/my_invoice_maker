@@ -8,10 +8,14 @@ import 'package:get_storage/get_storage.dart';
 import '../utils/api_endpoints.dart';
 import 'package:http/http.dart' as http;
 
+import 'clinetlist_controller.dart';
+
 class AddClientController extends GetxController {
   TextEditingController nameController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
   TextEditingController addressController = TextEditingController();
+
+  final clientListController = Get.find<ClinetlistController>();
   RxBool isLoading = false.obs;
   final box = GetStorage();
 
@@ -44,10 +48,13 @@ class AddClientController extends GetxController {
         nameController.clear();
         phoneController.clear();
         addressController.clear();
+        clientListController.finallist.clear();
+        clientListController.initialpage = 1;
+        clientListController.fetchclients();
         Fluttertoast.showToast(
             msg: "Client Added Successfully",
             toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM,
+            gravity: ToastGravity.CENTER,
             timeInSecForIosWeb: 1,
             backgroundColor: Colors.green,
             textColor: Colors.white,

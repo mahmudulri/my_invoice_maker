@@ -6,12 +6,13 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:invoice_maker/controllers/clinetlist_controller.dart';
 
 import '../utils/api_endpoints.dart';
 import 'product_list_controller.dart';
 
-class DeleteProductController extends GetxController {
-  final productController = Get.find<ProductListController>();
+class DeleteClientController extends GetxController {
+  final clientListController = Get.find<ClinetlistController>();
   final box = GetStorage();
 
   RxBool isLoading = false.obs;
@@ -38,9 +39,9 @@ class DeleteProductController extends GetxController {
 
       final results = jsonDecode(response.body);
       if (response.statusCode == 200) {
-        productController.finallist.clear();
-        productController.initialpage = 1;
-        productController.fetchproduct();
+        clientListController.finallist.clear();
+        clientListController.initialpage = 1;
+        clientListController.fetchclients();
         if (results["status"] == true) {
           Fluttertoast.showToast(
             msg: results["message"],
