@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
+import 'package:invoice_maker/routes/routes.dart';
 import 'package:invoice_maker/widgets/drawer_button.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class MyDrawer extends StatelessWidget {
   MyDrawer({super.key});
@@ -15,9 +16,15 @@ class MyDrawer extends StatelessWidget {
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
     return Container(
-      color: Colors.white,
       width: screenWidth - 100,
       height: screenHeight,
+      decoration: BoxDecoration(
+        color: Colors.black.withOpacity(0.8),
+        borderRadius: BorderRadius.only(
+          topRight: Radius.circular(30),
+          bottomRight: Radius.circular(30),
+        ),
+      ),
       child: Column(
         children: [
           SizedBox(
@@ -46,6 +53,9 @@ class MyDrawer extends StatelessWidget {
           DrawerButtonWidget(
             buttonName: "Log Out",
             myicon: FontAwesomeIcons.rightFromBracket,
+            onpressed: () {
+              Get.toNamed(signinscreen);
+            },
           ),
           SizedBox(
             height: 20,

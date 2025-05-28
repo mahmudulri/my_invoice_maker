@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../controllers/draftcontroller.dart';
+import '../invoicecontrollers/draftcontroller.dart';
 
 class PagetwoBD extends StatelessWidget {
   PagetwoBD({super.key});

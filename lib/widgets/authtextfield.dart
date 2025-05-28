@@ -15,7 +15,7 @@ class Authtextfield extends StatelessWidget {
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
     return Container(
-      height: screenHeight * 0.065,
+      height: 55,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
@@ -26,20 +26,24 @@ class Authtextfield extends StatelessWidget {
       ),
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 15),
-        child: TextField(
-          keyboardType: hinttext.toString() == "Enter amount"
-              ? TextInputType.phone
-              : TextInputType.name,
-          controller: controller,
-          decoration: InputDecoration(
-            // suffixIcon: hinttext.toString() == "Password"
-            //     ? Icon(Icons.visibility_off)
-            //     : null,
-            border: InputBorder.none,
-            hintText: hinttext,
-            hintStyle: TextStyle(
-              color: Colors.grey,
-              fontSize: screenHeight * 0.020,
+        child: Center(
+          child: TextField(
+            keyboardType: hinttext.toString() == "Enter amount" ||
+                    hinttext.toString() == "Phone number"
+                ? TextInputType.phone
+                : TextInputType.name,
+            controller: controller,
+            decoration: InputDecoration(
+              // suffixIcon: hinttext.toString() == "Password"
+              //     ? Icon(Icons.visibility_off)
+              //     : null,
+              border: InputBorder.none,
+              hintText: hinttext,
+              hintStyle: TextStyle(
+                fontWeight: FontWeight.w400,
+                color: Colors.grey,
+                fontSize: screenHeight * 0.020,
+              ),
             ),
           ),
         ),

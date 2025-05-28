@@ -1,16 +1,16 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:get/get_rx/get_rx.dart';
 import 'package:get_storage/get_storage.dart';
-
-import 'package:invoice_maker/dashboard.dart';
 import 'package:invoice_maker/utils/colors.dart';
 import 'package:invoice_maker/widgets/authtextfield.dart';
 import 'package:invoice_maker/widgets/default_button.dart';
-
+import 'package:lottie/lottie.dart';
+import '../controllers/auth_controller.dart';
+import '../controllers/sign_in_controller.dart';
+import '../routes/routes.dart';
 import 'sign_up_screen.dart';
+import 'package:local_auth/local_auth.dart';
 
 class SignInScreen extends StatefulWidget {
   SignInScreen({super.key});
@@ -22,6 +22,10 @@ class SignInScreen extends StatefulWidget {
 class _SignInScreenState extends State<SignInScreen> {
   final box = GetStorage();
 
+  final signInController = Get.find<SignInController>();
+
+  final AuthController authController = Get.put(AuthController());
+
   @override
   Widget build(BuildContext context) {
     // checkColor();
@@ -32,104 +36,184 @@ class _SignInScreenState extends State<SignInScreen> {
       body: Container(
         height: screenHeight,
         width: screenWidth,
-        child: Padding(
-          padding: EdgeInsets.all(12.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              SizedBox(
-                height: 180,
+        child: Stack(
+          children: [
+            Positioned(
+              top: -150,
+              left: 50,
+              child: CircleAvatar(
+                radius: 250,
+                backgroundColor: Color(0xffE8F2FC),
               ),
-              Text(
-                "Smart Invoice Generator",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
-                  color: Colors.black,
-                ),
+            ),
+            Positioned(
+              top: 150,
+              left: 250,
+              child: CircleAvatar(
+                radius: 200,
+                backgroundColor: Color(0xffE8F2FC),
               ),
-              SizedBox(
-                height: 80,
-              ),
-              Authtextfield(hinttext: "Phone number"),
-              SizedBox(
-                height: 10,
-              ),
-              Authtextfield(hinttext: "Password"),
-              SizedBox(
-                height: 10,
-              ),
-              DefaultButton(
-                buttonName: "Sign in",
-                mycolor: AppColors.primaryColor,
-                onpressed: () {
-                  Get.to(() => DashBoard());
-                },
-              ),
-              SizedBox(
-                height: 15,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Text(
-                    "Forgot pasasword ?",
-                    style: TextStyle(
-                      color: Colors.grey.shade500,
-                      fontSize: screenHeight * 0.016,
+            ),
+            Center(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: ListView(
+                  children: [
+                    SizedBox(
+                      height: 50,
                     ),
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Text(
-                    "Recover password",
-                    style: TextStyle(
-                      color: Color(0xff1890FF),
-                      fontSize: screenHeight * 0.017,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 40,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "Have not register yet ?",
-                    style: TextStyle(
-                      color: Colors.grey.shade500,
-                      fontSize: screenHeight * 0.022,
-                    ),
-                  ),
-                  SizedBox(
-                    width: 5,
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => SignUpScreen(),
-                        ),
-                      );
-                    },
-                    child: Text(
-                      "Sign Up",
-                      style: TextStyle(
-                        color: Color(0xff1890FF),
-                        fontSize: screenHeight * 0.022,
-                        fontWeight: FontWeight.bold,
+                    Center(
+                      child: Container(
+                        height: 200,
+                        width: 200,
+                        // color: Colors.red,
+                        child: Lottie.asset('assets/lotties/maninvoice.json'),
                       ),
                     ),
-                  ),
-                ],
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Welcome to",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15,
+                            color: Colors.black,
+                          ),
+                        ),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        Text(
+                          "Mega Invoice",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15,
+                            color: AppColors.primaryColor,
+                          ),
+                        ),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        Text(
+                          "Maker",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15,
+                            color: Colors.green,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 30,
+                    ),
+                    Authtextfield(
+                      hinttext: "Phone number",
+                      controller: signInController.phoneNumberController,
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Authtextfield(
+                      hinttext: "Password",
+                      controller: signInController.passwordController,
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Obx(
+                      () => DefaultButton(
+                        buttonName: signInController.isLoading.value == false
+                            ? "Sign in"
+                            : "Please wait",
+                        mycolor: AppColors.primaryColor,
+                        onpressed: () async {
+                          if (signInController
+                                  .phoneNumberController.text.isEmpty ||
+                              signInController
+                                  .passwordController.text.isEmpty) {
+                            Get.snackbar("Oops!", "Fill the text fields");
+                          } else {
+                            print("Attempting login...");
+                            await signInController.signIn();
+
+                            if (signInController.loginsuccess.value == false) {
+                              Get.toNamed(dashboard);
+                            } else {
+                              print("Navigation conditions not met.");
+                            }
+                          }
+                        },
+                      ),
+                    ),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Forgot pasasword ?",
+                          style: TextStyle(
+                            color: Colors.grey.shade500,
+                            fontSize: screenHeight * 0.016,
+                          ),
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          "Recover password",
+                          style: TextStyle(
+                            color: Color(0xff1890FF),
+                            fontSize: screenHeight * 0.017,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 40,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Have not register yet ?",
+                          style: TextStyle(
+                            color: Colors.grey.shade500,
+                            fontSize: screenHeight * 0.022,
+                          ),
+                        ),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => SignUpScreen(),
+                              ),
+                            );
+                          },
+                          child: Text(
+                            "Sign Up",
+                            style: TextStyle(
+                              color: Color(0xff1890FF),
+                              fontSize: screenHeight * 0.022,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

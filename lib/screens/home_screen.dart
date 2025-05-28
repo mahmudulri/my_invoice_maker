@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_rx/get_rx.dart';
-import 'package:invoice_maker/controllers/address_controller.dart';
-import 'package:invoice_maker/controllers/invoice_data_controller.dart';
+import 'package:invoice_maker/invoicecontrollers/address_controller.dart';
+import 'package:invoice_maker/invoicecontrollers/invoice_data_controller.dart';
 
-import '../controllers/item_list_controller.dart';
+import '../invoicecontrollers/item_list_controller.dart';
 
 class NewInvoiceScreen extends StatefulWidget {
   NewInvoiceScreen({super.key});

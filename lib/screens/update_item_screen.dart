@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../controllers/add_item_controller.dart';
-import '../controllers/item_list_controller.dart';
+import '../invoicecontrollers/add_item_controller.dart';
+import '../invoicecontrollers/item_list_controller.dart';
 
 class EditItemScreen extends StatelessWidget {
   final int index; // Index of the item in the list

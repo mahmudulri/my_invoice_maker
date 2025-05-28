@@ -1,12 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:invoice_maker/routes/routes.dart';
 import 'package:invoice_maker/utils/colors.dart';
 
-import '../controllers/address_controller.dart';
-import '../controllers/billto_controller.dart';
-import '../controllers/invoice_data_controller.dart';
-import '../controllers/item_list_controller.dart';
+import '../invoicecontrollers/address_controller.dart';
+import '../invoicecontrollers/billto_controller.dart';
+import '../invoicecontrollers/invoice_data_controller.dart';
+import '../invoicecontrollers/item_list_controller.dart';
 import '../new_address.dart';
 import '../pdftemplates/pdftemplate1.dart';
 import 'new_client.dart';
@@ -23,6 +24,7 @@ class CreateInvoiceScreen extends StatefulWidget {
 class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
   final BusinessAddressController businessAddressController =
       Get.put(BusinessAddressController(), permanent: true);
+
   final BilltoController billtoController = Get.put(BilltoController());
   final ItemListController itemListController = Get.put(
     ItemListController(),
@@ -137,18 +139,16 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
                                     ),
                                     Expanded(
                                       flex: 5,
-                                      child: Padding(
-                                        padding: EdgeInsets.only(
-                                            right: 10,
-                                            top: 5,
-                                            bottom: 5,
-                                            left: 15),
-                                        child: GestureDetector(
-                                          onTap: () {
-                                            Get.to(
-                                              () => NewAddressScreen(),
-                                            );
-                                          },
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          Get.toNamed(myshopscreen);
+                                        },
+                                        child: Padding(
+                                          padding: EdgeInsets.only(
+                                              right: 10,
+                                              top: 5,
+                                              bottom: 5,
+                                              left: 15),
                                           child: businessAddressController
                                                   .businessNameController
                                                   .text
@@ -263,9 +263,7 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
                                             left: 15),
                                         child: GestureDetector(
                                           onTap: () {
-                                            Get.to(
-                                              () => NewClientScreen(),
-                                            );
+                                            Get.toNamed(clientscreen);
                                           },
                                           child: Obx(() {
                                             if (billtoController
@@ -1068,6 +1066,7 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
                             child: GestureDetector(
                               onTap: () {
                                 showDialog(
+                                  barrierDismissible: false,
                                   context: context,
                                   builder: (context) {
                                     return AlertDialog(
@@ -1128,32 +1127,61 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
                                                     MainAxisAlignment
                                                         .spaceEvenly,
                                                 children: [
-                                                  Container(
-                                                    height: 45,
-                                                    width: 120,
-                                                    decoration: BoxDecoration(
-                                                      color: Colors.green,
-                                                    ),
-                                                    child: Center(
-                                                      child: Text(
-                                                        "Paid",
-                                                        style: TextStyle(
-                                                          color: Colors.white,
+                                                  GestureDetector(
+                                                    onTap: () {
+                                                      itemListController
+                                                          .dueamount
+                                                          .value = 0.0;
+                                                      itemListController
+                                                          .paidAmount
+                                                          .value = 0.0;
+                                                      invoiceDataController
+                                                          .dueDate.value = "";
+                                                      setState(() {
+                                                        invoiceDataController
+                                                                .invoiceStatus =
+                                                            "Paid";
+
+                                                        Navigator.pop(context);
+                                                      });
+                                                    },
+                                                    child: Container(
+                                                      height: 45,
+                                                      width: 120,
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.green,
+                                                      ),
+                                                      child: Center(
+                                                        child: Text(
+                                                          "Full Paid",
+                                                          style: TextStyle(
+                                                            color: Colors.white,
+                                                          ),
                                                         ),
                                                       ),
                                                     ),
                                                   ),
-                                                  Container(
-                                                    height: 45,
-                                                    width: 120,
-                                                    decoration: BoxDecoration(
-                                                      color: Colors.red,
-                                                    ),
-                                                    child: Center(
-                                                      child: Text(
-                                                        "Unpaid",
-                                                        style: TextStyle(
-                                                          color: Colors.white,
+                                                  GestureDetector(
+                                                    onTap: () {
+                                                      setState(() {
+                                                        invoiceDataController
+                                                                .invoiceStatus =
+                                                            "Unpaid";
+                                                        Navigator.pop(context);
+                                                      });
+                                                    },
+                                                    child: Container(
+                                                      height: 45,
+                                                      width: 120,
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.red,
+                                                      ),
+                                                      child: Center(
+                                                        child: Text(
+                                                          "Full Unpaid",
+                                                          style: TextStyle(
+                                                            color: Colors.white,
+                                                          ),
                                                         ),
                                                       ),
                                                     ),
@@ -1168,7 +1196,7 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
                                                     MainAxisAlignment
                                                         .spaceEvenly,
                                                 children: [
-                                                  Text("Due : "),
+                                                  Text("Paid Amount : "),
                                                   Container(
                                                     height: 45,
                                                     width: 100,
@@ -1186,6 +1214,15 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
                                                           EdgeInsets.symmetric(
                                                               horizontal: 5),
                                                       child: TextField(
+                                                        onChanged: (value) {
+                                                          double paid =
+                                                              double.tryParse(
+                                                                      value) ??
+                                                                  0.0;
+                                                          itemListController
+                                                              .updatePaidAmount(
+                                                                  paid);
+                                                        },
                                                         keyboardType:
                                                             TextInputType
                                                                 .number,
@@ -1201,25 +1238,99 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
                                                 ],
                                               ),
                                               SizedBox(
+                                                height: 10,
+                                              ),
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceEvenly,
+                                                children: [
+                                                  Text("Payable Date: "),
+                                                  GestureDetector(
+                                                    onTap: () async {
+                                                      // Open the Date Picker
+                                                      DateTime? pickedDate =
+                                                          await showDatePicker(
+                                                        context: context,
+                                                        initialDate:
+                                                            DateTime.now(),
+                                                        firstDate:
+                                                            DateTime(2000),
+                                                        lastDate:
+                                                            DateTime(2101),
+                                                      );
+
+                                                      if (pickedDate != null) {
+                                                        // Format the picked date to a string and update the controller
+                                                        String formattedDate =
+                                                            "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
+                                                        setState(() {
+                                                          invoiceDataController
+                                                                  .dueDate
+                                                                  .value =
+                                                              formattedDate;
+                                                        });
+                                                      }
+                                                    },
+                                                    child: Container(
+                                                      height: 45,
+                                                      width: 150,
+                                                      decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(6),
+                                                        border: Border.all(
+                                                            width: 1,
+                                                            color: Colors.grey),
+                                                      ),
+                                                      child: Center(
+                                                        child: Obx(
+                                                          () => Text(
+                                                            invoiceDataController
+                                                                        .dueDate
+                                                                        .toString() ==
+                                                                    ""
+                                                                ? "Select"
+                                                                : invoiceDataController
+                                                                    .dueDate
+                                                                    .toString(),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              SizedBox(
                                                 height: 20,
                                               ),
-                                              Container(
-                                                height: 45,
-                                                width: 130,
-                                                decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(6),
-                                                  border: Border.all(
-                                                    width: 1,
+                                              GestureDetector(
+                                                onTap: () {
+                                                  // setState(() {
+                                                  //   invoiceDataController
+                                                  //       .invoiceStatus = "Due";
+                                                  // });
+                                                  Navigator.pop(context);
+                                                },
+                                                child: Container(
+                                                  height: 45,
+                                                  width: 130,
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            6),
+                                                    border: Border.all(
+                                                      width: 1,
+                                                      color: Colors.grey,
+                                                    ),
                                                     color: Colors.grey,
                                                   ),
-                                                  color: Colors.grey,
-                                                ),
-                                                child: Center(
-                                                  child: Text(
-                                                    "Calculate Due",
-                                                    style: TextStyle(
-                                                      color: Colors.white,
+                                                  child: Center(
+                                                    child: Text(
+                                                      "Ok",
+                                                      style: TextStyle(
+                                                        color: Colors.white,
+                                                      ),
                                                     ),
                                                   ),
                                                 ),
@@ -1394,6 +1505,65 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
                                       : Text("calculating"),
                                 )
                               ],
+                            ),
+                            Visibility(
+                              visible:
+                                  // ignore: unrelated_type_equality_checks
+                                  itemListController.paidAmount != 0.0,
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "Paid Amount : ",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                  Text(
+                                    itemListController.paidAmount.value
+                                        .toStringAsFixed(2),
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Visibility(
+                              // ignore: unrelated_type_equality_checks
+                              visible: itemListController.dueamount != 0.0,
+
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "Due Balance : ",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                  Text(
+                                    invoiceDataController.dueDate.toString(),
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                    ),
+                                  ),
+                                  Spacer(),
+                                  Text(
+                                    itemListController.dueamount.value
+                                        .toStringAsFixed(2),
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ],
                         ),

@@ -22,28 +22,31 @@ class DrawerButtonWidget extends StatelessWidget {
       height: 40,
       width: screenWidth,
       decoration: BoxDecoration(
-        color: Colors.grey.shade300,
         borderRadius: BorderRadius.circular(7),
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 5),
-        child: Row(
-          children: [
-            FaIcon(
-              myicon,
-              color: Colors.white,
-            ),
-            SizedBox(
-              width: 7,
-            ),
-            Text(
-              buttonName.toString(),
-              style: TextStyle(
-                fontWeight: FontWeight.w500,
-                fontSize: 16,
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        child: GestureDetector(
+          onTap: onpressed,
+          child: Row(
+            children: [
+              FaIcon(
+                myicon,
+                color: Colors.grey.shade300,
               ),
-            ),
-          ],
+              SizedBox(
+                width: 7,
+              ),
+              Text(
+                buttonName.toString(),
+                style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 16,
+                  color: Colors.grey.shade300,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -3,8 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:invoice_maker/draft/draft.dart';
 
-import '../controllers/add_item_controller.dart';
-import '../controllers/item_list_controller.dart';
+import '../invoicecontrollers/add_item_controller.dart';
+import '../invoicecontrollers/item_list_controller.dart';
 
 class NewItemsScreen extends StatelessWidget {
   NewItemsScreen({super.key});

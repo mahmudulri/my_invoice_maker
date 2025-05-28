@@ -9,6 +9,7 @@
 # packages, and plugins designed to encourage good coding practices.
 analyzer:
   errors:
+    prefer_if_null_operators: ignore
     unn ignoreecessary_null_comparison: ignore
 include: package:flutter_lints/flutter.yaml
 
@@ -29,6 +30,5 @@ linter:
     prefer_const_constructors: false
     prefer_const_literals_to_create_immutables: false
     prefer_const_constructors_in_immutables: false
-
 # Additional information about this file can be found at
 # https://dart.dev/guides/language/analysis-options

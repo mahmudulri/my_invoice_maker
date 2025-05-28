@@ -2,29 +2,52 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:invoice_maker/controllers/new_items_controller.dart';
+import 'package:invoice_maker/invoicecontrollers/new_items_controller.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
-import '../controllers/address_controller.dart';
-import '../controllers/billto_controller.dart';
-import '../controllers/invoice_data_controller.dart';
-import '../controllers/item_list_controller.dart';
+import '../invoicecontrollers/address_controller.dart';
+import '../invoicecontrollers/billto_controller.dart';
+import '../invoicecontrollers/invoice_data_controller.dart';
+import '../invoicecontrollers/item_list_controller.dart';
 
 final BusinessAddressController businessAddressController = Get.put(
   BusinessAddressController(),
 );
 
 final BilltoController billtoController = Get.put(BilltoController());
+InvoiceDataController invoiceDataController = Get.put(InvoiceDataController());
 
 class PdfTemplate1 {
   Future<Uint8List> generatePDF() async {
     final pdf = pw.Document();
     List<pw.Widget> widgets = [];
+    final statusimgae = (await rootBundle
+            .load(invoiceDataController.imagelink.value.toString()))
+        .buffer
+        .asUint8List();
     final logo =
         (await rootBundle.load("assets/icons/logo.png")).buffer.asUint8List();
+
+    final sstatusarea = pw.Container(
+      height: 120,
+      width: 120,
+      child: pw.Image(pw.MemoryImage(statusimgae), height: 60),
+    );
+
+    final statusarea = pw.Transform.rotate(
+      angle: 25 * 3.1415927 / 170, // Rotate by 45 degrees in radians
+      child: pw.Container(
+        height: 150,
+        width: 150,
+        child: pw.Image(
+          pw.MemoryImage(statusimgae),
+          height: 60,
+        ),
+      ),
+    );
 
     final headerarea = pw.Container(
       height: 60,
@@ -337,7 +360,7 @@ class PdfTemplate1 {
       ),
     );
     final gap15 = pw.SizedBox(height: 15);
-    final gap150 = pw.SizedBox(height: 100);
+    final gap150 = pw.SizedBox(height: 250);
     final fullgap = pw.Expanded(
       flex: 1,
       fit: pw.FlexFit.tight,
@@ -349,8 +372,10 @@ class PdfTemplate1 {
     widgets.add(addressArea);
     widgets.add(gap15);
     widgets.add(table());
+
     widgets.add(gap150);
     widgets.add(totaprice);
+    widgets.add(statusarea);
 
     widgets.add(fullgap);
 

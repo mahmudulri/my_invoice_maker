@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:invoice_maker/controllers/template_data_controller.dart';
-import '../controllers/template_theme_controller.dart';
+import 'package:invoice_maker/invoicecontrollers/template_data_controller.dart';
+import '../invoicecontrollers/template_theme_controller.dart';
 
 class Pdfpageview extends StatelessWidget {
   Pdfpageview({super.key});

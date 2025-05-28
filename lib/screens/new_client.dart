@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:invoice_maker/controllers/billto_controller.dart';
+import 'package:invoice_maker/invoicecontrollers/billto_controller.dart';
 import 'package:invoice_maker/widgets/business_textbox.dart';
-import '../controllers/address_controller.dart';
+import '../invoicecontrollers/address_controller.dart';
 import '../helper/database_helper.dart';
 
 class NewClientScreen extends StatefulWidget {

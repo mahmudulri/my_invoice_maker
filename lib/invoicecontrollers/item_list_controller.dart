@@ -7,50 +7,64 @@ class ItemListController extends GetxController {
   double taxmount = 0.0;
   double shippingcost = 0.0;
 
+  RxDouble paidAmount = 0.0.obs; // ✅ Reactive paid amount
+  RxDouble dueamount = 0.0.obs; // ✅ Reactive due amount
+
   RxBool isloading = false.obs;
   RxBool subtotalloading = false.obs;
 
   RxList<Map<String, dynamic>> itemlist = <Map<String, dynamic>>[].obs;
-  RxDouble subTotalPrice = 0.0.obs; // Store subtotal as reactive
-  RxDouble totalPrice = 0.0.obs; // Store final price as reactive
+  RxDouble subTotalPrice = 0.0.obs;
+  RxDouble totalPrice = 0.0.obs;
 
   void addItem(Map<String, dynamic> newItem) {
     itemlist.add(newItem);
-    calculateTotalPrice(); // Recalculate when items are added
+    calculateTotalPrice();
   }
 
   void updateItem(int index, Map<String, dynamic> updatedItem) {
     itemlist[index] = updatedItem;
     itemlist.refresh();
-    calculateTotalPrice(); // Recalculate when items are updated
+    calculateTotalPrice();
   }
 
   void deleteItem(int index) {
     itemlist.removeAt(index);
-    calculateTotalPrice(); // Recalculate when items are removed
+    calculateTotalPrice();
   }
 
   void calculateTotalPrice() {
-    isloading.value = true; // Start loading
+    isloading.value = true;
 
     subTotalPrice.value = 0.0;
+
     for (var item in itemlist) {
       double itemTotal = double.tryParse(item["total"].toString()) ?? 0;
       subTotalPrice.value += itemTotal;
     }
 
-    // Apply discount
     double discountAmount = (subTotalPrice.value * discount) / 100;
     discountedPrice = discountAmount;
     double priceAfterDiscount = subTotalPrice.value - discountAmount;
 
-    // Apply tax
     taxmount = (priceAfterDiscount * tax) / 100;
-    totalPrice.value = priceAfterDiscount + taxmount; // Update total price
 
-    // Calculate total price including tax and shipping
     totalPrice.value = priceAfterDiscount + taxmount + shippingcost;
 
-    isloading.value = false; // Stop loading
+    calculateDueAmount(); // ✅ Update due whenever total changes
+
+    isloading.value = false;
+  }
+
+  void updatePaidAmount(double amount) {
+    paidAmount.value = amount;
+    calculateDueAmount(); // ✅ Recalculate due based on new paid amount
+  }
+
+  void calculateDueAmount() {
+    dueamount.value = totalPrice.value - paidAmount.value;
+    if (dueamount.value < 0) {
+      dueamount.value = 0.0;
+    }
   }
 }
