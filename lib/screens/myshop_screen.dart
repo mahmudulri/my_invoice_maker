@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:invoice_maker/controllers/add_shop_controller.dart';
 import 'package:invoice_maker/utils/api_endpoints.dart';
 import 'package:invoice_maker/utils/colors.dart';
 
 import '../controllers/myshoplist_controller.dart';
 import '../invoicecontrollers/address_controller.dart';
+import '../widgets/custom_text.dart';
 
 class MyshopScreen extends StatefulWidget {
   MyshopScreen({super.key});
@@ -42,10 +45,12 @@ class _MyshopScreenState extends State<MyshopScreen> {
                 showDialog(
                   context: context,
                   builder: (context) {
-                    return AlertDialog(
+                    return Dialog(
+                      insetPadding: EdgeInsets.zero,
+
                       backgroundColor: Colors.transparent,
-                      contentPadding: EdgeInsets.all(0.0),
-                      content: AddShopBox(),
+                      // insetPadding: EdgeInsets.all(0),
+                      child: AddShopBox(),
                     );
                   },
                 );
@@ -77,7 +82,15 @@ class _MyshopScreenState extends State<MyshopScreen> {
                       final data =
                           myshopcontroller.allshoplist.value.shops![index];
                       return GestureDetector(
-                        onTap: () {},
+                        onTap: () {
+                          businessAddressController.businessNameController
+                              .text = data.name.toString();
+                          businessAddressController.address1Controller.text =
+                              data.address.toString();
+                          businessAddressController.phoneNumberController.text =
+                              data.phoneNumber1.toString();
+                          Get.back();
+                        },
                         child: Container(
                           margin: EdgeInsets.only(bottom: 8),
                           decoration: BoxDecoration(
@@ -243,19 +256,268 @@ class _MyshopScreenState extends State<MyshopScreen> {
   }
 }
 
-class AddShopBox extends StatelessWidget {
-  const AddShopBox({super.key});
+class AddShopBox extends StatefulWidget {
+  AddShopBox({super.key});
 
+  @override
+  State<AddShopBox> createState() => _AddShopBoxState();
+}
+
+class _AddShopBoxState extends State<AddShopBox> {
+  final AddShopController addShopController = Get.put(AddShopController());
   @override
   Widget build(BuildContext context) {
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
     return Container(
-        height: 450,
-        width: double.maxFinite,
+      height: screenHeight,
+      width: double.maxFinite,
+      decoration: BoxDecoration(
+        color: Colors.white,
+      ),
+      child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
-        ));
+          border: Border.all(
+            width: 1,
+            color: Colors.grey.shade400,
+          ),
+        ),
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: Icon(
+                      Icons.arrow_back,
+                      size: 30,
+                    ),
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  KText(
+                    text: "New Shop",
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 15,
+              ),
+              Expanded(
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      width: 1,
+                      color: Colors.grey.shade300,
+                    ),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ListView(
+                      children: [
+                        Container(
+                          height: 55,
+                          width: screenWidth,
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              width: 1,
+                              color: Colors.grey.shade400,
+                            ),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: TextField(
+                              textAlignVertical: TextAlignVertical.center,
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText: "Enter Shop name",
+                                hintStyle: TextStyle(
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 16,
+                                  color: Colors.grey.shade500,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Container(
+                          height: 80,
+                          width: screenWidth,
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              width: 1,
+                              color: Colors.grey.shade400,
+                            ),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: TextField(
+                              maxLines: 4,
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText: "Enter Shop Address",
+                                hintStyle: TextStyle(
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 16,
+                                  color: Colors.grey.shade500,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Container(
+                          height: 60,
+                          width: screenWidth,
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              width: 1,
+                              color: Colors.grey.shade400,
+                            ),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 10),
+                            child: TextField(
+                              textAlignVertical: TextAlignVertical.center,
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText: "Enter Phone number 1",
+                                hintStyle: TextStyle(
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 16,
+                                  color: Colors.grey.shade500,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Container(
+                          height: 60,
+                          width: screenWidth,
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              width: 1,
+                              color: Colors.grey.shade400,
+                            ),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 10),
+                            child: TextField(
+                              textAlignVertical: TextAlignVertical.center,
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText: "Enter Phone number 2",
+                                hintStyle: TextStyle(
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 16,
+                                  color: Colors.grey.shade500,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Container(
+                          height: 60,
+                          width: screenWidth,
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              width: 1,
+                              color: Colors.grey.shade400,
+                            ),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 10),
+                            child: TextField(
+                              textAlignVertical: TextAlignVertical.center,
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText: "Enter Website",
+                                hintStyle: TextStyle(
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 16,
+                                  color: Colors.grey.shade500,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Obx(
+                          () => addShopController.selectedImagePath.value == ""
+                              ? Container(
+                                  height: 130,
+                                  width: 130,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                      width: 1,
+                                      color: Colors.grey.shade400,
+                                    ),
+                                  ),
+                                  child: GestureDetector(
+                                    onTap: () async {
+                                      await addShopController.uploadImage();
+                                    },
+                                    child: Center(
+                                      child: Icon(
+                                        FontAwesomeIcons.upload,
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              : Container(
+                                  height: 130,
+                                  width: 130,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      width: 1,
+                                      color: Colors.grey,
+                                    ),
+                                    shape: BoxShape.circle,
+                                    image: DecorationImage(
+                                      image: FileImage(
+                                          addShopController.imageFile!),
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

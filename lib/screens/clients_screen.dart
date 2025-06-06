@@ -163,13 +163,13 @@ class _ClientsScreenState extends State<ClientsScreen> {
                                 clientListController.finallist[index];
                             return GestureDetector(
                               onTap: () {
-                                // billtoController.nameController.text =
-                                //     client.name.toString();
-                                // billtoController.phoneNumberController.text =
-                                //     client.phoneNumber.toString();
-                                // billtoController.address1Controller.text =
-                                //     client.address.toString();
-                                // Get.back();
+                                billtoController.nameController.text =
+                                    client.name.toString();
+                                billtoController.phoneNumberController.text =
+                                    client.phoneNumber.toString();
+                                billtoController.address1Controller.text =
+                                    client.address.toString();
+                                Get.back();
                               },
                               child: Container(
                                 decoration: BoxDecoration(

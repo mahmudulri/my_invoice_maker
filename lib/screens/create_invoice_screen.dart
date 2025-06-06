@@ -139,79 +139,78 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
                                     ),
                                     Expanded(
                                       flex: 5,
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          Get.toNamed(myshopscreen);
-                                        },
-                                        child: Padding(
-                                          padding: EdgeInsets.only(
-                                              right: 10,
-                                              top: 5,
-                                              bottom: 5,
-                                              left: 15),
-                                          child: businessAddressController
-                                                  .businessNameController
-                                                  .text
-                                                  .isNotEmpty
-                                              ? Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: [
-                                                    Text(
-                                                      businessAddressController
-                                                          .businessNameController
-                                                          .text,
-                                                      style: TextStyle(
+                                      child: Padding(
+                                        padding: EdgeInsets.only(
+                                            right: 10,
+                                            top: 5,
+                                            bottom: 5,
+                                            left: 15),
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            Get.toNamed(myshopscreen);
+                                          },
+                                          child: Obx(() {
+                                            if (businessAddressController
+                                                .businessNameText
+                                                .value
+                                                .isNotEmpty) {
+                                              return Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Text(
+                                                    businessAddressController
+                                                        .businessNameController
+                                                        .text,
+                                                    style: TextStyle(
                                                         fontSize: 14,
                                                         fontWeight:
-                                                            FontWeight.w500,
-                                                      ),
-                                                    ),
-                                                    Row(
-                                                      children: [
-                                                        Text(
-                                                          businessAddressController
-                                                              .address1Controller
-                                                              .text,
-                                                          style: TextStyle(
-                                                            fontSize: 12,
-                                                          ),
-                                                        ),
-                                                        Text(
-                                                          ", ${businessAddressController.address2Controller.text}",
-                                                          style: TextStyle(
-                                                            fontSize: 12,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    Text(
-                                                      businessAddressController
-                                                          .phoneNumberController
-                                                          .text,
-                                                      style: TextStyle(
-                                                        fontSize: 12,
-                                                      ),
-                                                    ),
-                                                    if (businessAddressController
-                                                        .websiteController
-                                                        .text
-                                                        .isNotEmpty)
+                                                            FontWeight.w500),
+                                                  ),
+                                                  Row(
+                                                    children: [
                                                       Text(
                                                         businessAddressController
-                                                            .websiteController
+                                                            .address1Controller
                                                             .text,
                                                         style: TextStyle(
                                                             fontSize: 12),
                                                       ),
-                                                  ],
-                                                )
-                                              : Center(
+                                                      Text(
+                                                        ", ${businessAddressController.address2Controller.text}",
+                                                        style: TextStyle(
+                                                            fontSize: 12),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  Text(
+                                                    businessAddressController
+                                                        .phoneNumberController
+                                                        .text,
+                                                    style:
+                                                        TextStyle(fontSize: 12),
+                                                  ),
+                                                  if (businessAddressController
+                                                      .websiteText
+                                                      .value
+                                                      .isNotEmpty)
+                                                    Text(
+                                                      businessAddressController
+                                                          .websiteController
+                                                          .text,
+                                                      style: TextStyle(
+                                                          fontSize: 12),
+                                                    ),
+                                                ],
+                                              );
+                                            } else {
+                                              return Center(
                                                   child: Text(
-                                                      "Click to Add Your Business info."),
-                                                ),
+                                                      "Add Your shop info."));
+                                            }
+                                          }),
                                         ),
                                       ),
                                     ),
@@ -1620,7 +1619,8 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        Get.to(() => NewItemsScreen());
+                        // Get.to(() => NewItemsScreen());
+                        Get.toNamed(productscreen);
                       },
                       child: Container(
                         height: 40,
@@ -1639,25 +1639,30 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
                     ),
                     Expanded(
                       flex: 1,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.horizontal(
-                              right: Radius.circular(20)),
-                          border: Border.all(
-                            width: 1,
-                            color: Colors.grey.shade300,
+                      child: GestureDetector(
+                        onTap: () {
+                          Get.back();
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.horizontal(
+                                right: Radius.circular(20)),
+                            border: Border.all(
+                              width: 1,
+                              color: Colors.grey.shade300,
+                            ),
                           ),
+                          child: Center(
+                              child: Text(
+                            "Cancel",
+                            style: TextStyle(
+                              fontWeight: FontWeight.w700,
+                              color: Colors.black,
+                              fontSize: 14,
+                            ),
+                          )),
                         ),
-                        child: Center(
-                            child: Text(
-                          "Cancel",
-                          style: TextStyle(
-                            fontWeight: FontWeight.w700,
-                            color: Colors.black,
-                            fontSize: 14,
-                          ),
-                        )),
                       ),
                     ),
                   ],

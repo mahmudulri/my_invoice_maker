@@ -9,6 +9,8 @@ import 'package:invoice_maker/widgets/default_button.dart';
 
 import '../controllers/add_product_controller.dart';
 import '../controllers/delete_product_controller.dart';
+import '../invoicecontrollers/add_item_controller.dart';
+import '../invoicecontrollers/item_list_controller.dart';
 
 class ProductScreen extends StatefulWidget {
   ProductScreen({super.key});
@@ -30,6 +32,7 @@ class _ProductScreenState extends State<ProductScreen> {
   }
 
   AddProductController addProductController = Get.put(AddProductController());
+  final AddItemController addItemController = Get.put(AddItemController());
 
   DeleteProductController deleteProductController =
       Get.put(DeleteProductController());
@@ -165,59 +168,82 @@ class _ProductScreenState extends State<ProductScreen> {
                               children: [
                                 Expanded(
                                   flex: 7,
-                                  child: Container(
-                                    width: screenWidth,
-                                    height: double.maxFinite,
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(
-                                          8), // smoother curve
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.grey
-                                              .withOpacity(0.1), // soft shadow
-                                          blurRadius: 2,
-                                          spreadRadius: 2,
-                                          offset: Offset(
-                                              0, 2), // subtle vertical shadow
-                                        ),
-                                      ],
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            data.name.toString(),
-                                            style: TextStyle(
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.w500,
-                                            ),
-                                          ),
-                                          Row(
-                                            children: [
-                                              Text(
-                                                "Price : "
-                                                "${data.unitPrice} Tk",
-                                                style: TextStyle(
-                                                  fontSize: 14,
-                                                ),
-                                              ),
-                                              Text("      -/ "),
-                                              Text(
-                                                data.unitOfMeasure.toString(),
-                                                style: TextStyle(
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.w500,
-                                                ),
-                                              ),
-                                            ],
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      addItemController.itemNameController
+                                          .text = data.name.toString();
+                                      addItemController.unitPriceController
+                                          .text = data.unitPrice.toString();
+                                      addItemController.unitOfMeasureController
+                                          .text = data.unitOfMeasure.toString();
+                                      addItemController
+                                          .discountTypeController.text = "%";
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return AlertDialog(
+                                            backgroundColor: Colors.transparent,
+                                            contentPadding: EdgeInsets.all(0),
+                                            insetPadding: EdgeInsets.all(0),
+                                            content: AddCartBox(),
+                                          );
+                                        },
+                                      );
+                                    },
+                                    child: Container(
+                                      width: screenWidth,
+                                      height: double.maxFinite,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(
+                                            8), // smoother curve
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.grey.withOpacity(
+                                                0.1), // soft shadow
+                                            blurRadius: 2,
+                                            spreadRadius: 2,
+                                            offset: Offset(
+                                                0, 2), // subtle vertical shadow
                                           ),
                                         ],
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              data.name.toString(),
+                                              style: TextStyle(
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
+                                            Row(
+                                              children: [
+                                                Text(
+                                                  "Price : "
+                                                  "${data.unitPrice} Tk",
+                                                  style: TextStyle(
+                                                    fontSize: 14,
+                                                  ),
+                                                ),
+                                                Text("      -/ "),
+                                                Text(
+                                                  data.unitOfMeasure.toString(),
+                                                  style: TextStyle(
+                                                    fontSize: 12,
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -450,6 +476,9 @@ class _AddproductBoxState extends State<AddproductBox> {
         padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
         child: ListView(
           children: [
+            SizedBox(
+              height: 10,
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -458,9 +487,14 @@ class _AddproductBoxState extends State<AddproductBox> {
                   fontSize: 17,
                   fontWeight: FontWeight.w500,
                 ),
-                Icon(
-                  Icons.close,
-                  size: 25,
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Icon(
+                    Icons.close,
+                    size: 30,
+                  ),
                 )
               ],
             ),
@@ -468,7 +502,7 @@ class _AddproductBoxState extends State<AddproductBox> {
               height: 5,
             ),
             Container(
-              height: 55,
+              height: 50,
               width: screenWidth,
               decoration: BoxDecoration(
                 border: Border.all(
@@ -503,7 +537,7 @@ class _AddproductBoxState extends State<AddproductBox> {
               height: 5,
             ),
             Container(
-              height: 55,
+              height: 50,
               width: screenWidth,
               decoration: BoxDecoration(
                 border: Border.all(
@@ -539,7 +573,7 @@ class _AddproductBoxState extends State<AddproductBox> {
               height: 5,
             ),
             Container(
-              height: 55,
+              height: 50,
               width: screenWidth,
               padding: const EdgeInsets.symmetric(horizontal: 10),
               decoration: BoxDecoration(
@@ -583,13 +617,13 @@ class _AddproductBoxState extends State<AddproductBox> {
             KText(
               text: "Product Category",
               fontSize: 17,
-              fontWeight: FontWeight.w500,
+              fontWeight: FontWeight.w600,
             ),
             SizedBox(
               height: 5,
             ),
             Container(
-              height: 55,
+              height: 50,
               width: screenWidth,
               padding: const EdgeInsets.symmetric(horizontal: 10),
               decoration: BoxDecoration(
@@ -666,6 +700,647 @@ class _AddproductBoxState extends State<AddproductBox> {
               ),
             )
           ],
+        ),
+      ),
+    );
+  }
+}
+
+//......................................Add Cart Box........................//
+
+class AddCartBox extends StatefulWidget {
+  AddCartBox({super.key});
+
+  @override
+  State<AddCartBox> createState() => _AddCartBoxState();
+}
+
+class _AddCartBoxState extends State<AddCartBox> {
+  List<String> unitTypes = [
+    'Box',
+    'Packet',
+    'Carton',
+    'Piece',
+    'Dozen',
+    'Bundle',
+    'Kg',
+    'Gram (G)',
+    'Litter',
+    'Ml',
+    'Case',
+    'Pallet',
+    'Roll',
+    'Set',
+    'Barrel',
+  ];
+
+  List<String> discountType = [
+    'Flat',
+    '%',
+  ];
+  final AddItemController addItemController = Get.put(AddItemController());
+  final ItemListController itemListController = Get.put(ItemListController());
+
+  @override
+  Widget build(BuildContext context) {
+    var screenHeight = MediaQuery.of(context).size.height;
+    var screenWidth = MediaQuery.of(context).size.width;
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 20),
+      child: Container(
+        height: 550,
+        width: screenWidth,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Row(
+                children: [
+                  Text(
+                    "Name",
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ],
+              ),
+              Container(
+                height: 50,
+                width: screenWidth,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(
+                    width: 1,
+                    color: Colors.grey.shade300,
+                  ),
+                ),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  child: Center(
+                    child: TextFormField(
+                      readOnly: true,
+                      controller: addItemController.itemNameController,
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        hintText: "Item Name",
+                        hintStyle: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+
+              SizedBox(
+                height: 5,
+              ),
+              Row(
+                children: [
+                  Text(
+                    "Unit Price",
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ],
+              ),
+              Container(
+                height: 50,
+                width: screenWidth,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(
+                    width: 1,
+                    color: Colors.grey.shade300,
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: TextField(
+                    readOnly: true,
+                    onChanged: (value) {
+                      addItemController.calculateTotalPrice();
+                    },
+                    controller: addItemController.unitPriceController,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      hintText: "Item Price",
+                      hintStyle: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 3,
+              ),
+              SizedBox(
+                width: screenWidth,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Quantity",
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      "Unit of measure",
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 3,
+              ),
+              Container(
+                height: 50,
+                child: Row(
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            width: 1,
+                            color: Colors.grey.shade300,
+                          ),
+                        ),
+                        child: Padding(
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+                          child: Center(
+                            child: TextField(
+                              onChanged: (value) {
+                                addItemController.calculateTotalPrice();
+                              },
+                              controller: addItemController.quantityController,
+                              keyboardType: TextInputType.number,
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText: "0",
+                                hintStyle: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            width: 1,
+                            color: Colors.grey.shade300,
+                          ),
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.only(
+                            left: 10,
+                          ),
+                          child: Center(
+                            child: TextField(
+                              readOnly: true,
+                              controller:
+                                  addItemController.unitOfMeasureController,
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 3,
+              ),
+              Container(
+                width: screenWidth,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Discount",
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      "Discount Type",
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 3,
+              ),
+
+              Container(
+                height: 45,
+                child: Row(
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: Container(
+                        // height: 50,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            width: 1,
+                            color: Colors.grey.shade300,
+                          ),
+                        ),
+                        child: Padding(
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+                          child: TextField(
+                            onChanged: (value) {
+                              addItemController.calculateTotalPrice();
+                            },
+                            controller:
+                                addItemController.unitDiscountController,
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                              hintText: "0",
+                              hintStyle: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: Container(
+                        // height: 50,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            width: 1,
+                            color: Colors.grey.shade300,
+                          ),
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.only(
+                            left: 10,
+                          ),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: TextField(
+                                  textAlign: TextAlign.center,
+                                  readOnly: true,
+                                  controller:
+                                      addItemController.discountTypeController,
+                                  decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                  ),
+                                ),
+                              ),
+                              // GestureDetector(
+                              //   onTap: () {
+                              //     showDialog(
+                              //       context: context,
+                              //       builder: (context) {
+                              //         return AlertDialog(
+                              //           backgroundColor: Colors.transparent,
+                              //           contentPadding: EdgeInsets.all(0.0),
+                              //           content: Container(
+                              //             height: 110,
+                              //             width: screenWidth,
+                              //             decoration: BoxDecoration(
+                              //               color: Colors.white,
+                              //               borderRadius:
+                              //                   BorderRadius.circular(10),
+                              //             ),
+                              //             child: Padding(
+                              //               padding: EdgeInsets.all(8.0),
+                              //               child: ListView.builder(
+                              //                 physics: BouncingScrollPhysics(),
+                              //                 itemCount: discountType.length,
+                              //                 itemBuilder: (context, index) {
+                              //                   return GestureDetector(
+                              //                     onTap: () {
+                              //                       // ignore: unrelated_type_equality_checks
+                              //                       addItemController
+                              //                               .discountTypeController
+                              //                               .text =
+                              //                           discountType[index];
+                              //                       addItemController
+                              //                           .calculateTotalPrice();
+
+                              //                       Navigator.pop(context);
+                              //                     },
+                              //                     child: Container(
+                              //                       margin: EdgeInsets.only(
+                              //                           bottom: 5),
+                              //                       height: 40,
+                              //                       width: screenWidth,
+                              //                       decoration: BoxDecoration(
+                              //                         color: Colors.white,
+                              //                         borderRadius:
+                              //                             BorderRadius.circular(
+                              //                                 8),
+                              //                         border: Border.all(
+                              //                           width: 1,
+                              //                           color: Colors
+                              //                               .grey.shade300,
+                              //                         ),
+                              //                       ),
+                              //                       child: Center(
+                              //                         child: Text(
+                              //                           discountType[index],
+                              //                         ),
+                              //                       ),
+                              //                     ),
+                              //                   );
+                              //                 },
+                              //               ),
+                              //             ),
+                              //           ),
+                              //         );
+                              //       },
+                              //     );
+                              //   },
+                              //   child: Container(
+                              //     width: 40,
+                              //     decoration: BoxDecoration(
+                              //       color: Colors.grey,
+                              //       borderRadius: BorderRadius.circular(5),
+                              //     ),
+                              //     child: Center(
+                              //       child: Icon(
+                              //         Icons.arrow_downward,
+                              //         color: Colors.white,
+                              //       ),
+                              //     ),
+                              //   ),
+                              // ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 3,
+              ),
+
+              ///..................................................//
+              Container(
+                width: screenWidth,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        "Vat %",
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              // SizedBox(
+              //   height: 5,
+              // ),
+              SizedBox(
+                height: 3,
+              ),
+              Container(
+                height: 45,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        height: 45,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            width: 1,
+                            color: Colors.grey.shade300,
+                          ),
+                        ),
+                        child: Padding(
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+                          child: TextField(
+                            onChanged: (value) {
+                              addItemController.calculateTotalPrice();
+                            },
+                            controller: addItemController.unitVatController,
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                              hintText: "0",
+                              hintStyle: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 5,
+              ),
+
+              Container(
+                height: 45,
+                width: screenWidth,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.black,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Total : ",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w800,
+                          color: Colors.white,
+                        ),
+                      ),
+                      Obx(
+                        () => Text(
+                          addItemController.itemTotalPrice.value.toString(),
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w800,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 15,
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    flex: 1,
+                    child: GestureDetector(
+                      onTap: () {
+                        addItemController.itemNameController.clear();
+                        addItemController.unitPriceController.clear();
+                        addItemController.unitOfMeasureController.clear();
+                        addItemController.quantityController.clear();
+
+                        Navigator.pop(context);
+                      },
+                      child: Container(
+                        height: 45,
+                        decoration: BoxDecoration(
+                          color: Colors.grey,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Center(
+                          child: Text(
+                            "Cancel",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 17,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    width: 20,
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: GestureDetector(
+                      onTap: () async {
+                        if (addItemController.itemNameController.text.isNotEmpty &&
+                            addItemController
+                                .unitPriceController.text.isNotEmpty &&
+                            addItemController
+                                .quantityController.text.isNotEmpty &&
+                            addItemController
+                                .unitOfMeasureController.text.isNotEmpty) {
+                          Map<String, dynamic> newItem = {
+                            "name": addItemController.itemNameController.text,
+                            "unitprice":
+                                addItemController.unitPriceController.text,
+                            "quantity":
+                                addItemController.quantityController.text,
+                            "unitofmeasure":
+                                addItemController.unitOfMeasureController.text,
+                            "discount":
+                                addItemController.unitDiscountController.text,
+                            "discounttype":
+                                addItemController.discountTypeController.text,
+                            "vat": addItemController.unitVatController.text,
+                            "total":
+                                addItemController.itemTotalPrice.toString(),
+                          };
+                          itemListController.addItem(newItem);
+                          itemListController.calculateTotalPrice();
+                          itemListController.calculateTotalPrice();
+
+                          Get.back();
+                        } else {
+                          Get.snackbar(
+                            "Attention",
+                            "Add required data must",
+                          );
+                        }
+                      },
+                      child: Container(
+                        height: 45,
+                        decoration: BoxDecoration(
+                          color: Colors.green,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Center(
+                          child: Text(
+                            "Add Now",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 17,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

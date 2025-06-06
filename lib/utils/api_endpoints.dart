@@ -8,5 +8,6 @@ class OtherendPoints {
   final String signin = "auth/sign-in";
   final String clientlist = "auth/get-clients";
   final String addclient = "auth/add-client";
+  final String addshop = "shops/create";
   final String addproduct = "products/create";
 }
