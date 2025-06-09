@@ -1308,7 +1308,8 @@ class _AddCartBoxState extends State<AddCartBox> {
                           };
                           itemListController.addItem(newItem);
                           itemListController.calculateTotalPrice();
-                          itemListController.calculateTotalPrice();
+                          itemListController.calculateDueAmount();
+                          Navigator.pop(context);
 
                           Get.back();
                         } else {

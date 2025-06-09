@@ -1,8 +1,8 @@
 import 'package:get/get.dart';
 
 class ItemListController extends GetxController {
-  double discount = 0;
-  double discountedPrice = 0;
+  double discount = 0.0;
+  double discountedPrice = 0.0;
   double tax = 0.0;
   double taxmount = 0.0;
   double shippingcost = 0.0;

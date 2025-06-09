@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:invoice_maker/routes/routes.dart';
 import 'package:invoice_maker/utils/colors.dart';
@@ -31,8 +32,10 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
     permanent: true,
   );
 
-  final InvoiceDataController invoiceDataController =
-      Get.put(InvoiceDataController());
+  final InvoiceDataController invoiceDataController = Get.put(
+    InvoiceDataController(),
+    permanent: true,
+  );
 
   List statusList = [
     "Unpaid",
@@ -41,6 +44,7 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
   ];
 
   TextEditingController vatController = TextEditingController();
+  TextEditingController paidAmount = TextEditingController();
 
   TextEditingController discountController = TextEditingController();
   TextEditingController taxController = TextEditingController();
@@ -379,160 +383,191 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
                                   itemBuilder: (context, index) {
                                     final data =
                                         itemListController.itemlist[index];
-                                    return Container(
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(5),
-                                        boxShadow: [
-                                          // strong top shadow
-                                          BoxShadow(
-                                            color: Colors.black.withOpacity(
-                                                0.15), // stronger and darker
-                                            spreadRadius: 0,
-                                            blurRadius: 2,
-                                            offset: Offset(0,
-                                                -1), // negative Y moves shadow upward
+                                    return GestureDetector(
+                                      onTap: () {
+                                        showDialog(
+                                          context: context,
+                                          builder: (context) => AlertDialog(
+                                            title: Text('Remove Item'),
+                                            content: Text(
+                                                'Are you sure you want to remove this item?'),
+                                            actions: [
+                                              TextButton(
+                                                onPressed: () =>
+                                                    Navigator.pop(context),
+                                                child: Text('Cancel'),
+                                              ),
+                                              TextButton(
+                                                onPressed: () {
+                                                  itemListController
+                                                      .deleteItem(index);
+                                                  Navigator.pop(context);
+                                                },
+                                                child: Text('Remove'),
+                                              ),
+                                            ],
                                           ),
+                                        );
+                                      },
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                          boxShadow: [
+                                            // strong top shadow
+                                            BoxShadow(
+                                              color: Colors.black.withOpacity(
+                                                  0.15), // stronger and darker
+                                              spreadRadius: 0,
+                                              blurRadius: 2,
+                                              offset: Offset(0,
+                                                  -1), // negative Y moves shadow upward
+                                            ),
 
-                                          // subtle bottom shadow (optional)
-                                          BoxShadow(
-                                            color:
-                                                Colors.black.withOpacity(0.05),
-                                            spreadRadius: 1,
-                                            blurRadius: 2,
-                                            offset: Offset(0, 1),
-                                          ),
-                                        ],
-                                      ),
-                                      width: screenWidth,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Column(
-                                          children: [
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: [
-                                                Text(
-                                                  data["name"],
-                                                  style: TextStyle(
-                                                    fontSize: 15,
-                                                  ),
-                                                ),
-                                                Container(
-                                                  child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment.end,
-                                                    children: [
-                                                      Text(
-                                                        data["quantity"],
-                                                        style: TextStyle(
-                                                          color: Colors.black,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          fontSize: 14,
-                                                        ),
-                                                      ),
-                                                      SizedBox(
-                                                        width: 5,
-                                                      ),
-                                                      Text(
-                                                        data["unitofmeasure"],
-                                                        style: TextStyle(
-                                                          color: Colors.black,
-                                                          fontSize: 14,
-                                                        ),
-                                                      ),
-                                                      Text(
-                                                        " × ",
-                                                        style: TextStyle(
-                                                          fontSize: 14,
-                                                        ),
-                                                      ),
-                                                      Text(
-                                                        data["unitprice"],
-                                                        style: TextStyle(
-                                                          color: Colors.black,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          fontSize: 14,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            Visibility(
-                                              visible: data["discount"] != "",
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Text(
-                                                    // ignore: prefer_interpolation_to_compose_strings
-                                                    "Discount " +
-                                                        data["discount"] +
-                                                        data["discounttype"],
-                                                    style: TextStyle(
-                                                      fontSize: 14,
-                                                      color: Colors.grey,
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                    "-" + data["discount"],
-                                                    style: TextStyle(
-                                                      fontSize: 14,
-                                                      color: Colors.grey,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            Visibility(
-                                              visible: data["vat"] != "",
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Text(
-                                                    // ignore: prefer_interpolation_to_compose_strings
-                                                    "Tax " + data["vat"] + " %",
-                                                    style: TextStyle(
-                                                      fontSize: 14,
-                                                      color: Colors.grey,
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                    "+" + data["vat"],
-                                                    style: TextStyle(
-                                                      fontSize: 14,
-                                                      color: Colors.grey,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.end,
-                                              children: [
-                                                Text(
-                                                  // ignore: prefer_interpolation_to_compose_strings
-                                                  data["total"],
-                                                  style: TextStyle(
-                                                    fontSize: 15,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                              ],
+                                            // subtle bottom shadow (optional)
+                                            BoxShadow(
+                                              color: Colors.black
+                                                  .withOpacity(0.05),
+                                              spreadRadius: 1,
+                                              blurRadius: 2,
+                                              offset: Offset(0, 1),
                                             ),
                                           ],
+                                        ),
+                                        width: screenWidth,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Column(
+                                            children: [
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: [
+                                                  Text(
+                                                    data["name"],
+                                                    style: TextStyle(
+                                                      fontSize: 15,
+                                                    ),
+                                                  ),
+                                                  Container(
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment.end,
+                                                      children: [
+                                                        Text(
+                                                          data["quantity"],
+                                                          style: TextStyle(
+                                                            color: Colors.black,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontSize: 14,
+                                                          ),
+                                                        ),
+                                                        SizedBox(
+                                                          width: 5,
+                                                        ),
+                                                        Text(
+                                                          data["unitofmeasure"],
+                                                          style: TextStyle(
+                                                            color: Colors.black,
+                                                            fontSize: 14,
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          " × ",
+                                                          style: TextStyle(
+                                                            fontSize: 14,
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          data["unitprice"],
+                                                          style: TextStyle(
+                                                            color: Colors.black,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontSize: 14,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              Visibility(
+                                                visible: data["discount"] != "",
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Text(
+                                                      // ignore: prefer_interpolation_to_compose_strings
+                                                      "Discount " +
+                                                          data["discount"] +
+                                                          data["discounttype"],
+                                                      style: TextStyle(
+                                                        fontSize: 14,
+                                                        color: Colors.grey,
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      "-" + data["discount"],
+                                                      style: TextStyle(
+                                                        fontSize: 14,
+                                                        color: Colors.grey,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              Visibility(
+                                                visible: data["vat"] != "",
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Text(
+                                                      // ignore: prefer_interpolation_to_compose_strings
+                                                      "Tax " +
+                                                          data["vat"] +
+                                                          " %",
+                                                      style: TextStyle(
+                                                        fontSize: 14,
+                                                        color: Colors.grey,
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      "+" + data["vat"],
+                                                      style: TextStyle(
+                                                        fontSize: 14,
+                                                        color: Colors.grey,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.end,
+                                                children: [
+                                                  Text(
+                                                    // ignore: prefer_interpolation_to_compose_strings
+                                                    data["total"],
+                                                    style: TextStyle(
+                                                      fontSize: 15,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     );
@@ -563,31 +598,26 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
                             fontSize: 18,
                           ),
                         ),
-                        Visibility(
-                          visible:
-                              invoiceDataController.invoiceStatus.toString() !=
-                                  "Status",
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: invoiceDataController.invoiceStatus
-                                          .toString() ==
-                                      "Paid"
-                                  ? Colors.green
-                                  : Colors.red,
-                              borderRadius: BorderRadius.circular(6),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 8, vertical: 4),
-                              child: Text(
-                                invoiceDataController.invoiceStatus.toString(),
-                                style: TextStyle(
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
+                        // Container(
+                        //   decoration: BoxDecoration(
+                        //     color: invoiceDataController.invoiceStatus
+                        //                 .toString() ==
+                        //             "Paid"
+                        //         ? Colors.green
+                        //         : Colors.red,
+                        //     borderRadius: BorderRadius.circular(6),
+                        //   ),
+                        //   child: Padding(
+                        //     padding: const EdgeInsets.symmetric(
+                        //         horizontal: 8, vertical: 4),
+                        //     child: Text(
+                        //       invoiceDataController.invoiceStatus.toString(),
+                        //       style: TextStyle(
+                        //         color: Colors.white,
+                        //       ),
+                        //     ),
+                        //   ),
+                        // ),
                       ],
                     ),
 
@@ -642,7 +672,6 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
                                                 child: Padding(
                                                   padding: EdgeInsets.symmetric(
                                                     horizontal: 10,
-                                                    vertical: 8,
                                                   ),
                                                   child: TextField(
                                                     onChanged: (value) {
@@ -807,7 +836,6 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
                                                 child: Padding(
                                                   padding: EdgeInsets.symmetric(
                                                     horizontal: 10,
-                                                    vertical: 8,
                                                   ),
                                                   child: TextField(
                                                     onChanged: (value) {
@@ -955,7 +983,6 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
                                                 child: Padding(
                                                   padding: EdgeInsets.symmetric(
                                                     horizontal: 10,
-                                                    vertical: 8,
                                                   ),
                                                   child: TextField(
                                                     onChanged: (value) {
@@ -1072,7 +1099,7 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
                                       backgroundColor: Colors.transparent,
                                       contentPadding: EdgeInsets.all(0.0),
                                       content: Container(
-                                        height: 250,
+                                        height: 270,
                                         width: screenWidth,
                                         decoration: BoxDecoration(
                                           color: Colors.white,
@@ -1081,44 +1108,6 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
                                         ),
                                         child: Padding(
                                           padding: EdgeInsets.all(8.0),
-                                          // child: ListView.builder(
-                                          //   physics: BouncingScrollPhysics(),
-                                          //   itemCount: statusList.length,
-                                          //   itemBuilder: (context, index) {
-                                          //     return GestureDetector(
-                                          //       onTap: () {
-                                          //         setState(() {
-                                          //           invoiceDataController
-                                          //                   .invoiceStatus =
-                                          //               statusList[index];
-                                          //         });
-                                          //       },
-                                          //       child: Container(
-                                          //         margin: EdgeInsets.only(
-                                          //             bottom: 5),
-                                          //         height: 40,
-                                          //         width: screenWidth,
-                                          //         decoration: BoxDecoration(
-                                          //           color: Colors.white,
-                                          //           borderRadius:
-                                          //               BorderRadius.circular(
-                                          //                   8),
-                                          //           border: Border.all(
-                                          //             width: 1,
-                                          //             color:
-                                          //                 Colors.grey.shade300,
-                                          //           ),
-                                          //         ),
-                                          //         child: Center(
-                                          //           child: Text(
-                                          //             statusList[index],
-                                          //           ),
-                                          //         ),
-                                          //       ),
-                                          //     );
-                                          //   },
-                                          // ),
-
                                           child: Column(
                                             children: [
                                               Row(
@@ -1145,7 +1134,7 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
                                                       });
                                                     },
                                                     child: Container(
-                                                      height: 45,
+                                                      height: 50,
                                                       width: 120,
                                                       decoration: BoxDecoration(
                                                         color: Colors.green,
@@ -1166,6 +1155,17 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
                                                         invoiceDataController
                                                                 .invoiceStatus =
                                                             "Unpaid";
+                                                        itemListController
+                                                                .dueamount
+                                                                .value =
+                                                            double.parse(
+                                                                itemListController
+                                                                    .totalPrice
+                                                                    .toString());
+
+                                                        itemListController
+                                                            .paidAmount
+                                                            .value = 0;
                                                         Navigator.pop(context);
                                                       });
                                                     },
@@ -1197,7 +1197,7 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
                                                 children: [
                                                   Text("Paid Amount : "),
                                                   Container(
-                                                    height: 45,
+                                                    height: 50,
                                                     width: 100,
                                                     decoration: BoxDecoration(
                                                       borderRadius:
@@ -1211,25 +1211,36 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
                                                     child: Padding(
                                                       padding:
                                                           EdgeInsets.symmetric(
-                                                              horizontal: 5),
-                                                      child: TextField(
-                                                        onChanged: (value) {
-                                                          double paid =
-                                                              double.tryParse(
-                                                                      value) ??
-                                                                  0.0;
-                                                          itemListController
-                                                              .updatePaidAmount(
-                                                                  paid);
-                                                        },
-                                                        keyboardType:
-                                                            TextInputType
-                                                                .number,
-                                                        decoration:
-                                                            InputDecoration(
-                                                          hintText: "Amount",
-                                                          border:
-                                                              InputBorder.none,
+                                                        horizontal: 5,
+                                                      ),
+                                                      child: Center(
+                                                        child: TextField(
+                                                          controller:
+                                                              paidAmount,
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                          onChanged: (value) {
+                                                            double paid =
+                                                                double.tryParse(
+                                                                        value) ??
+                                                                    0.0;
+                                                            itemListController
+                                                                .updatePaidAmount(
+                                                                    paid);
+                                                          },
+                                                          keyboardType:
+                                                              TextInputType
+                                                                  .number,
+                                                          decoration:
+                                                              InputDecoration(
+                                                            hintText: "Amount",
+                                                            hintStyle:
+                                                                TextStyle(
+                                                              fontSize: 15,
+                                                            ),
+                                                            border: InputBorder
+                                                                .none,
+                                                          ),
                                                         ),
                                                       ),
                                                     ),
@@ -1303,36 +1314,93 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
                                               SizedBox(
                                                 height: 20,
                                               ),
-                                              GestureDetector(
-                                                onTap: () {
-                                                  // setState(() {
-                                                  //   invoiceDataController
-                                                  //       .invoiceStatus = "Due";
-                                                  // });
-                                                  Navigator.pop(context);
-                                                },
-                                                child: Container(
-                                                  height: 45,
-                                                  width: 130,
-                                                  decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            6),
-                                                    border: Border.all(
-                                                      width: 1,
-                                                      color: Colors.grey,
-                                                    ),
-                                                    color: Colors.grey,
-                                                  ),
-                                                  child: Center(
-                                                    child: Text(
-                                                      "Ok",
-                                                      style: TextStyle(
-                                                        color: Colors.white,
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  GestureDetector(
+                                                    onTap: () {
+                                                      paidAmount.clear();
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: Container(
+                                                      height: 45,
+                                                      width: 130,
+                                                      decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(6),
+                                                        border: Border.all(
+                                                          width: 1,
+                                                          color: Colors.grey,
+                                                        ),
+                                                        color: Colors.grey,
+                                                      ),
+                                                      child: Center(
+                                                        child: Text(
+                                                          "Cancel",
+                                                          style: TextStyle(
+                                                            color: Colors.white,
+                                                          ),
+                                                        ),
                                                       ),
                                                     ),
                                                   ),
-                                                ),
+                                                  GestureDetector(
+                                                    onTap: () {
+                                                      if (invoiceDataController
+                                                          .dueDate
+                                                          .value
+                                                          .isNotEmpty) {
+                                                        setState(() {
+                                                          invoiceDataController
+                                                                  .invoiceStatus =
+                                                              "Due";
+                                                        });
+                                                        paidAmount.clear();
+                                                        Navigator.pop(context);
+                                                      } else {
+                                                        Fluttertoast.showToast(
+                                                          msg:
+                                                              "Select Payable Date",
+                                                          toastLength: Toast
+                                                              .LENGTH_SHORT,
+                                                          gravity:
+                                                              ToastGravity.TOP,
+                                                          timeInSecForIosWeb: 2,
+                                                          backgroundColor:
+                                                              Colors.black87,
+                                                          textColor:
+                                                              Colors.white,
+                                                          fontSize: 16.0,
+                                                        );
+                                                      }
+                                                    },
+                                                    child: Container(
+                                                      height: 45,
+                                                      width: 130,
+                                                      decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(6),
+                                                        border: Border.all(
+                                                          width: 1,
+                                                          color: Colors.grey,
+                                                        ),
+                                                        color: Colors.grey,
+                                                      ),
+                                                      child: Center(
+                                                        child: Text(
+                                                          "Ok",
+                                                          style: TextStyle(
+                                                            color: Colors.white,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
                                             ],
                                           ),
@@ -1345,7 +1413,14 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
                               child: Container(
                                 height: 35,
                                 decoration: BoxDecoration(
-                                  color: Colors.white,
+                                  color: invoiceDataController.invoiceStatus
+                                                  .toString() ==
+                                              "Unpaid" ||
+                                          invoiceDataController.invoiceStatus
+                                                  .toString() ==
+                                              "Due"
+                                      ? Colors.red
+                                      : Colors.green,
                                   borderRadius: BorderRadius.circular(8),
                                   border: Border.all(
                                     width: 1,
@@ -1356,6 +1431,9 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
                                   child: Text(
                                     invoiceDataController.invoiceStatus
                                         .toString(),
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -1533,7 +1611,10 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
                             ),
                             Visibility(
                               // ignore: unrelated_type_equality_checks
-                              visible: itemListController.dueamount != 0.0,
+                              visible: itemListController.dueamount != 0.0 ||
+                                  invoiceDataController.invoiceStatus
+                                          .toString() ==
+                                      "Unpaid",
 
                               child: Row(
                                 mainAxisAlignment:
@@ -1553,14 +1634,16 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
                                     ),
                                   ),
                                   Spacer(),
-                                  Text(
-                                    itemListController.dueamount.value
-                                        .toStringAsFixed(2),
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w700,
-                                      fontSize: 14,
+                                  Obx(
+                                    () => Text(
+                                      itemListController.dueamount.value
+                                          .toStringAsFixed(2),
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 14,
+                                      ),
                                     ),
-                                  ),
+                                  )
                                 ],
                               ),
                             ),
