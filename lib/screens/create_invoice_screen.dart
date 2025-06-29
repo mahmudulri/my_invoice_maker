@@ -385,29 +385,32 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
                                         itemListController.itemlist[index];
                                     return GestureDetector(
                                       onTap: () {
-                                        showDialog(
-                                          context: context,
-                                          builder: (context) => AlertDialog(
-                                            title: Text('Remove Item'),
-                                            content: Text(
-                                                'Are you sure you want to remove this item?'),
-                                            actions: [
-                                              TextButton(
-                                                onPressed: () =>
-                                                    Navigator.pop(context),
-                                                child: Text('Cancel'),
-                                              ),
-                                              TextButton(
-                                                onPressed: () {
-                                                  itemListController
-                                                      .deleteItem(index);
-                                                  Navigator.pop(context);
-                                                },
-                                                child: Text('Remove'),
-                                              ),
-                                            ],
-                                          ),
-                                        );
+                                        print(itemListController.itemlist
+                                            .toJson());
+
+                                        // showDialog(
+                                        //   context: context,
+                                        //   builder: (context) => AlertDialog(
+                                        //     title: Text('Remove Item'),
+                                        //     content: Text(
+                                        //         'Are you sure you want to remove this item?'),
+                                        //     actions: [
+                                        //       TextButton(
+                                        //         onPressed: () =>
+                                        //             Navigator.pop(context),
+                                        //         child: Text('Cancel'),
+                                        //       ),
+                                        //       TextButton(
+                                        //         onPressed: () {
+                                        //           itemListController
+                                        //               .deleteItem(index);
+                                        //           Navigator.pop(context);
+                                        //         },
+                                        //         child: Text('Remove'),
+                                        //       ),
+                                        //     ],
+                                        //   ),
+                                        // );
                                       },
                                       child: Container(
                                         decoration: BoxDecoration(

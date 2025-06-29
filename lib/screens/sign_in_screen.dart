@@ -248,8 +248,8 @@ class _SignInScreenState extends State<SignInScreen> {
                       ElevatedButton(
                         onPressed: () async {
                           signInController.phoneNumberController.text =
-                              "01721856206";
-                          signInController.passwordController.text = "000000";
+                              "01816544003";
+                          signInController.passwordController.text = "111111";
                           await signInController.signIn();
                           if (signInController.loginsuccess.value = true) {
                             Get.toNamed(dashboard);

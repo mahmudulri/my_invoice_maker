@@ -19,7 +19,7 @@ class MyDrawer extends StatelessWidget {
       width: screenWidth - 100,
       height: screenHeight,
       decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.8),
+        color: Colors.black,
         borderRadius: BorderRadius.only(
           topRight: Radius.circular(30),
           bottomRight: Radius.circular(30),
@@ -48,6 +48,7 @@ class MyDrawer extends StatelessWidget {
           SizedBox(
             height: 50,
           ),
+          Text("data"),
 
           Spacer(),
           DrawerButtonWidget(

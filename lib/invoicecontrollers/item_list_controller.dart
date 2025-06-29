@@ -14,6 +14,7 @@ class ItemListController extends GetxController {
   RxBool subtotalloading = false.obs;
 
   RxList<Map<String, dynamic>> itemlist = <Map<String, dynamic>>[].obs;
+
   RxDouble subTotalPrice = 0.0.obs;
   RxDouble totalPrice = 0.0.obs;
 
